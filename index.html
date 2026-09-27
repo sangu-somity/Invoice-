@@ -24,7 +24,7 @@
   body.dark .hint,body.dark .row label,body.dark #modal label{color:#aaa}
   body.dark .card{background:#2a2f35} body.dark .card b{color:#8ab4f8} body.dark .card span{color:#aaa}
   body.dark .route-item{background:#2a2f35;border-color:#444} body.dark .route-item.done{background:#1f3a24}
-  body.dark .overdue td{background:#4a1f1f!important} body.dark #modal .box,body.dark #rmodal>div{background:#1e2226;color:#eee}
+  body.dark .overdue td{background:#4a1f1f!important} body.dark #modal .box,body.dark #rmodal>div,body.dark #mmodal>div{background:#1e2226;color:#eee}
   body.dark #statement,body.dark #report{background:#fff;color:#000} body.dark #invoice{color:#000}
   body.dark .due{color:#ff7b72} body.dark .paid{color:#7ee787}
   #lock{position:fixed;inset:0;background:#1a4d8f;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff}
@@ -271,7 +271,7 @@
   <!-- ---- Settings tab ---- -->
   <div id="tab-set" class="tab">
     <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
-    <p class="hint">অ্যাপ ভার্সন: <b>v7</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
+    <p class="hint">অ্যাপ ভার্সন: <b>v8</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
     <div class="row">
       <label>Company Name <input id="s-co"></label>
       <label>Address line 1 <input id="s-ad1"></label>
@@ -331,6 +331,13 @@
   <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn-s" onclick="closeModal()">বাতিল</button><button class="btn-g" onclick="savePayment()">সেভ</button></div>
 </div></div>
 
+<div id="mmodal" class="no-print" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;align-items:center;justify-content:center;padding:12px"><div class="box" style="background:#fff;padding:16px;border-radius:8px;width:360px;max-width:95vw">
+  <h3 style="margin:0 0 8px">📨 দোকানদারকে মেসেজ</h3>
+  <p class="hint" id="mm-info"></p>
+  <textarea id="mm-text" oninput="updLen()" rows="8" style="width:100%;font-size:14px;box-sizing:border-box;font-family:inherit"></textarea>
+  <p class="hint">মেসেজ চাইলে এডিট করে নিন। SMS আপনার সিম থেকে যাবে (<span id="mm-len"></span>)।</p>
+  <div class="row" style="margin-top:8px;justify-content:flex-end;flex-wrap:wrap;gap:6px"><button class="btn-s" onclick="closeMsg()">বাদ</button><button class="btn-b" onclick="copyMsg()">কপি</button><button class="btn-o" onclick="sendMsg('sms')">📩 SMS</button><button class="btn-wa" onclick="sendMsg('wa')">WhatsApp</button></div>
+</div></div>
 <div id="rmodal" class="no-print" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99"><div style="background:#fff;padding:16px;border-radius:8px;width:340px;max-width:95vw">
   <h3 style="margin:0 0 4px;font-size:16px;color:#f0a500">↩️ রিটার্ন / এক্সপায়ারি</h3>
   <div id="r-info" class="hint"></div>
@@ -748,6 +755,7 @@ let savePayment=function(){
   if(amt>dueOf(h)+0.5 && !confirm('বকেয়া '+fmt(dueOf(h))+' টাকা, কিন্তু আপনি '+fmt(amt)+' দিচ্ছেন। ঠিক আছে?')) return;
   h.payments.push({date:$('m-date').value,amount:amt,method:$('m-method').value,note:$('m-note').value});
   h.paid=h.payments.reduce((a,p)=>a+(+p.amount||0),0); SS('history',history); closeModal(); renderHistory(); if($('tab-route').classList.contains('active')) renderRoute();
+  const p=h.payments[h.payments.length-1]; setTimeout(()=>{ if(confirm('জমা সেভ হয়েছে।\nদোকানদারকে রসিদ-মেসেজ পাঠাবেন? (WhatsApp / SMS)')) msgReceipt(h,p); },200);
 };
 function delPayment(hi,pi){ if(!confirm('এই জমা এন্ট্রি মুছবেন?')) return; const h=history[hi]; h.payments.splice(pi,1); h.paid=h.payments.reduce((a,p)=>a+(+p.amount||0),0); SS('history',history); renderHistory(); renderStatement(); }
 const daysOld = d => Math.floor((Date.now()-new Date(d).getTime())/86400000);
@@ -767,13 +775,37 @@ function waInvoice(i){
   t+='\n*Total: '+fmt(h.total)+' Tk*\nPaid: '+fmt(h.paid)+(retOf(h)?'\nReturn: '+fmt(retOf(h)):'')+'\n*Due: '+fmt(due)+' Tk*\n\n— '+settings.mpo+' (MPO), '+settings.mob;
   waSend(h.party,t);
 }
+
+/* ---------- Bengali message (WA / SMS) ---------- */
+const shortParty = p => (p||'').replace(/^0?3[bB]\s*/,'').replace(/\s*\(.*$/,'').replace(/\.\s*$/,'').trim();
+const bd = d => (d||'').split('-').reverse().join('/');
+const methodBn = m => ({Cash:'ক্যাশ',bKash:'বিকাশ',Nagad:'নগদ',Rocket:'রকেট',Bank:'ব্যাংক',Cheque:'চেক'})[m]||m;
+let msgParty=null;
+function msgDue(i){ const h=history[i]; const due=dueOf(h);
+  let t=shortParty(h.party)+',\nইনভয়েস '+h.no+' ('+bd(h.date)+'): মোট '+fmt(h.total)+' টাকা, জমা '+fmt(h.paid||0)+(retOf(h)?', রিটার্ন '+fmt(retOf(h)):'')+', বকেয়া '+fmt(due)+' টাকা।';
+  const pd=partyDue(h.party); if(Math.abs(pd-due)>0.5) t+='\nআপনার মোট বকেয়া '+fmt(pd)+' টাকা।';
+  t+=(due>0.5?'\nদয়া করে পরিশোধ করবেন, ধন্যবাদ।':'\nসম্পূর্ণ পরিশোধিত, ধন্যবাদ।')+'\n— '+settings.mpo+', Albion, '+settings.mob;
+  openMsg(h.party,t); }
+function msgReceipt(h,p){ const due=dueOf(h);
+  let t=shortParty(h.party)+',\n'+bd(p.date)+' তারিখে '+fmt(p.amount)+' টাকা ('+methodBn(p.method)+') জমা পেলাম, ধন্যবাদ।\nইনভয়েস '+h.no+': মোট '+fmt(h.total)+', মোট জমা '+fmt(h.paid||0)+', বকেয়া '+fmt(due)+' টাকা।';
+  const pd=partyDue(h.party); if(Math.abs(pd-due)>0.5) t+='\nআপনার মোট বকেয়া '+fmt(pd)+' টাকা।';
+  t+='\n— '+settings.mpo+', Albion, '+settings.mob; openMsg(h.party,t); }
+function openMsg(party,text){ msgParty=party; $('mm-info').textContent=party+(prof(party).phone?' · '+prof(party).phone:' · ⚠️ ফোন নম্বর নেই — পাঠানোর সময় চাইবে'); $('mm-text').value=text; updLen(); $('mmodal').style.display='flex'; }
+function updLen(){ const n=$('mm-text').value.length; $('mm-len').textContent=n+' অক্ষর ≈ '+Math.ceil(n/(n>70?67:70))+' SMS'; }
+function closeMsg(){ $('mmodal').style.display='none'; }
+function copyMsg(){ navigator.clipboard&&navigator.clipboard.writeText($('mm-text').value).then(()=>alert('কপি হয়েছে')); }
+function getPhone(party,what){ let ph=prof(party).phone; if(!ph){ ph=prompt(party+'\nএর '+what+' নম্বর দিন (01XXXXXXXXX):'); if(!ph) return null; prof(party).phone=ph; SS('profiles',profiles); } return ph; }
+function sendMsg(kind){ const t=$('mm-text').value; const ph=getPhone(msgParty,kind==='wa'?'WhatsApp':'মোবাইল'); if(!ph) return;
+  if(kind==='wa') window.open('https://wa.me/'+waNumber(ph)+'?text='+encodeURIComponent(t),'_blank');
+  else location.href='sms:'+ph.replace(/\D/g,'')+'?body='+encodeURIComponent(t);
+  closeMsg(); }
 function delHist(i){ if(confirm('মুছে ফেলবেন?')){history.splice(i,1);SS('history',history);renderHistory();} }
 function renderHistory(){
   let due=0;
   $('histTable').tBodies[0].innerHTML=history.map((h,i)=>{const d=dueOf(h);due+=d; const od=d>0.5&&daysOld(h.date)>30;
     return `<tr class="${od?'overdue':''}"><td>${h.date}</td><td>${h.no}${h.quick?' <span class="badge" style="background:#f0a500">টাকা</span>':''}</td><td>${h.party}${od?'<span class="badge">'+daysOld(h.date)+' দিন</span>':''}${h.narr?'<div class="hint">'+h.narr+'</div>':''}</td><td style="text-align:right">${fmt(h.total)}</td>
     <td style="text-align:right" class="paid">${fmt(h.paid||0)}</td><td style="text-align:right" class="${d>0.5?'due':'paid'}">${fmt(d)}</td>
-    <td style="white-space:nowrap"><button class="btn-g btn-sm" onclick="addPayment(${i})">জমা</button> <button class="btn-wa btn-sm" onclick="waInvoice(${i})">WA</button> ${h.quick?'':`<button class="btn-o btn-sm" onclick="addReturn(${i})">রিটার্ন</button> <button class="btn-p btn-sm" onclick="loadInvoice(${i})">খুলুন</button>`} <button class="btn-r btn-sm" onclick="delHist(${i})">✕</button></td></tr>`;}).join('');
+    <td style="white-space:nowrap"><button class="btn-g btn-sm" onclick="addPayment(${i})">জমা</button> <button class="btn-wa btn-sm" onclick="msgDue(${i})" title="বকেয়া মেসেজ (WA/SMS)">📨</button> ${h.quick?'':`<button class="btn-o btn-sm" onclick="addReturn(${i})">রিটার্ন</button> <button class="btn-p btn-sm" onclick="loadInvoice(${i})">খুলুন</button>`} <button class="btn-r btn-sm" onclick="delHist(${i})">✕</button></td></tr>`;}).join('');
   // collection diary
   if(!$('colMonth').value) $('colMonth').value=new Date().toISOString().slice(0,7);
   const mo=$('colMonth').value; let mt=0, rows=[];
@@ -1040,6 +1072,6 @@ function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); defe
 window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
 renderProducts(); newInvoice(); initPrefs();
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a41c16e629cbdce8',t:'MTc5MDUyODY4Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
