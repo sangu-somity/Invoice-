@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sazzad MPO - Albion Invoice</title>
+<link rel="manifest" id="manifestLink" href="">
+<meta name="theme-color" content="#1a4d8f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sazzad MPO">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+<style>
+  *{box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#e9edf2;color:#222;font-size:14px}
+  /* ---------- Editor panel ---------- */
+  .panel{background:#fff;max-width:1100px;margin:12px auto;padding:14px 16px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+  .panel h2{margin:0 0 10px;font-size:17px;color:#1a4d8f}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .row label{display:flex;flex-direction:column;font-size:12px;color:#555;flex:1 1 160px}
+  .row input,.row select,.row textarea{padding:7px 8px;border:1px solid #bbb;border-radius:4px;font-size:14px;margin-top:2px}
+  button{padding:8px 14px;border:0;border-radius:5px;cursor:pointer;font-size:14px;font-weight:bold}
+  .btn-p{background:#1a4d8f;color:#fff}.btn-g{background:#1e8e3e;color:#fff}.btn-r{background:#c62828;color:#fff}.btn-o{background:#f0a500;color:#fff}.btn-s{background:#777;color:#fff}
+  .btn-sm{padding:4px 8px;font-size:12px}
+  table.edit{width:100%;border-collapse:collapse;font-size:13px}
+  table.edit th,table.edit td{border:1px solid #ccc;padding:3px}
+  table.edit th{background:#f1f4f8;font-size:12px}
+  table.edit input{width:100%;padding:5px;border:1px solid #ccc;border-radius:3px;font-size:13px}
+  table.edit input[type=number]{text-align:right}
+  .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .tabs button{background:#dde3ea;color:#333}
+  .tabs button.active{background:#1a4d8f;color:#fff}
+  .tab{display:none}.tab.active{display:block}
+  .hint{font-size:12px;color:#777}
+  .list tr td{padding:5px}
+  .due{color:#c62828;font-weight:bold}.paid{color:#1e8e3e;font-weight:bold}
+
+  /* ---------- Invoice (print) ---------- */
+  #invoice{background:#fff;width:210mm;min-height:148mm;margin:12px auto;padding:10mm 8mm;box-shadow:0 1px 6px rgba(0,0,0,.2);font-family:Arial,Helvetica,sans-serif;color:#000}
+  #invoice .co{text-align:center}
+  #invoice .co h1{margin:0;font-size:22px}
+  #invoice .co p{margin:3px 0;font-size:13px}
+  #invoice h2{text-align:center;font-size:18px;margin:18px 0 12px}
+  .meta{display:flex;justify-content:space-between;font-size:13px}
+  .meta td{padding:2px 6px 2px 0;vertical-align:top}
+  .meta .party{font-size:16px;font-weight:bold}
+  table.inv{width:100%;border-collapse:collapse;margin-top:26px;font-size:12px}
+  table.inv th{background:#f1f1f1;border:1px solid #444;border-bottom:2px solid #444;padding:6px 3px;font-size:11px}
+  table.inv td{border-left:1px solid #ddd;border-right:1px solid #ddd;border-bottom:1px solid #ddd;padding:5px 3px}
+  table.inv .r{text-align:right}.c{text-align:center}
+  table.inv tfoot td{border:1px solid #ccc;font-weight:bold;padding:6px 3px}
+  table.inv tfoot .lab{text-align:right;padding-right:8px}
+  .words{font-size:12px;margin-top:10px}
+  .narr{font-size:12px;margin-top:22px}
+  .sign{display:flex;justify-content:space-between;margin-top:55px;font-size:12px}
+  .sign div{border-top:1px solid #000;padding-top:4px;width:150px;text-align:center}
+
+  @media print{
+    body{background:#fff}
+    .panel,.no-print{display:none!important}
+    #invoice{box-shadow:none;margin:0;width:auto;padding:0}
+    @page{size:A4;margin:12mm}
+  }
+  @media (max-width:800px){#invoice{width:100%;padding:12px;overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<!-- ================= EDITOR ================= -->
+<div class="panel">
+  <div class="row" style="align-items:center;justify-content:space-between;margin-bottom:6px">
+    <b style="font-size:16px;color:#1a4d8f">📱 Sazzad MPO <span class="hint" style="font-weight:normal">— Albion (SPZD), Banshakhali</span></b>
+    <button id="installBtn" class="btn-g btn-sm" style="display:none" onclick="installApp()">⬇️ অ্যাপ ইনস্টল করুন</button>
+  </div>
+  <div class="tabs">
+    <button class="active" onclick="showTab('inv',this)">📝 ইনভয়েস</button>
+    <button onclick="showTab('prod',this)">💊 প্রোডাক্ট লিস্ট</button>
+    <button onclick="showTab('hist',this)">📒 হিসাব / বকেয়া</button>
+    <button onclick="showTab('set',this)">⚙️ সেটিংস</button>
+  </div>
+
+  <!-- ---- Invoice tab ---- -->
+  <div id="tab-inv" class="tab active">
+    <div class="row">
+      <label>Date <input type="date" id="f-date"></label>
+      <label>Invoice No. <input id="f-no" placeholder="ASD59323"></label>
+      <label style="flex:2 1 260px">Party Name (দোকানের নাম)
+        <input id="f-party" list="partyList" placeholder="03b Soydul Hoque Pharmacy.( Gunagori Banshakhali.)">
+        <datalist id="partyList"></datalist>
+      </label>
+    </div>
+    <div class="row">
+      <label>MPO Name <input id="f-mpo"></label>
+      <label>Mobile No <input id="f-mob"></label>
+      <label>Area <input id="f-area"></label>
+    </div>
+
+    <table class="edit" id="items">
+      <thead><tr>
+        <th style="width:28px">SL</th><th>Name of the Item</th><th style="width:70px">Desc.</th>
+        <th style="width:80px">Rate</th><th style="width:70px">Qty</th><th style="width:60px">Unit</th>
+        <th style="width:70px">Disc.</th><th style="width:60px">Bonus</th><th style="width:34px"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="row" style="margin-top:8px;align-items:center">
+      <button class="btn-g" onclick="addRow()">+ আইটেম যোগ</button>
+      <label style="flex:0 0 130px">Add &amp; Less (±) <input type="number" id="f-adj" value="0" step="0.01" oninput="render()"></label>
+      <label style="flex:2 1 200px">Narration <input id="f-narr" oninput="render()"></label>
+    </div>
+    <div class="row">
+      <button class="btn-p" onclick="window.print()">🖨️ প্রিন্ট / PDF</button>
+      <button class="btn-o" onclick="saveInvoice()">💾 হিসাবে সেভ করুন</button>
+      <button class="btn-s" onclick="newInvoice()">🆕 নতুন ইনভয়েস</button>
+    </div>
+    <p class="hint">টিপস: প্রোডাক্টের নাম টাইপ করলে সেভ করা লিস্ট থেকে সাজেশন আসবে, রেট আর ডেসক্রিপশন অটো বসবে। প্রিন্টে শুধু নিচের ইনভয়েসটাই যাবে।</p>
+  </div>
+
+  <!-- ---- Products tab ---- -->
+  <div id="tab-prod" class="tab">
+    <h2>প্রোডাক্ট লিস্ট (একবার দিলে সেভ থাকবে)</h2>
+    <div class="row">
+      <label>Name <input id="p-name"></label>
+      <label>Description <input id="p-desc" placeholder="5 X 10"></label>
+      <label>Rate (BDT) <input id="p-rate" type="number" step="0.001"></label>
+      <label style="flex:0 0 90px">Unit <input id="p-unit" value="Box"></label>
+      <label style="flex:0 0 auto;justify-content:flex-end"><button class="btn-g" onclick="addProduct()">যোগ করুন</button></label>
+    </div>
+    <table class="edit list" id="prodTable"><thead><tr><th>#</th><th>Name</th><th>Desc</th><th>Rate</th><th>Unit</th><th></th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <!-- ---- History tab ---- -->
+  <div id="tab-hist" class="tab">
+    <h2>সেভ করা ইনভয়েস ও কালেকশন</h2>
+    <p><b>মোট বিক্রি: <span id="totalSale">0</span> &nbsp;|&nbsp; মোট জমা: <span class="paid" id="totalPaid">0</span> &nbsp;|&nbsp; মোট বকেয়া: <span class="due" id="totalDue">0</span> টাকা</b></p>
+    <h3 style="margin:6px 0;font-size:14px">দোকান অনুযায়ী বকেয়া</h3>
+    <table class="edit list" id="partyTable"><thead><tr><th>Party</th><th>Invoices</th><th>Total</th><th>Paid</th><th>Due</th></tr></thead><tbody></tbody></table>
+    <h3 style="margin:12px 0 6px;font-size:14px">সব ইনভয়েস</h3>
+    <table class="edit list" id="histTable"><thead><tr><th>Date</th><th>Inv No</th><th>Party</th><th>Total</th><th>Paid</th><th>Due</th><th>Action</th></tr></thead><tbody></tbody></table>
+    <div class="row" style="margin-top:10px">
+      <button class="btn-s" onclick="exportData()">⬇️ ব্যাকআপ ডাউনলোড</button>
+      <label style="flex:0 0 auto"><span>ব্যাকআপ রিস্টোর</span><input type="file" accept=".json" onchange="importData(this)"></label>
+    </div>
+  </div>
+
+  <!-- ---- Settings tab ---- -->
+  <div id="tab-set" class="tab">
+    <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
+    <div class="row">
+      <label>Company Name <input id="s-co"></label>
+      <label>Address line 1 <input id="s-ad1"></label>
+      <label>Address line 2 <input id="s-ad2"></label>
+    </div>
+    <div class="row">
+      <label>Default MPO Name <input id="s-mpo"></label>
+      <label>Default Mobile <input id="s-mob"></label>
+      <label>Default Area <input id="s-area"></label>
+    </div>
+    <div class="row">
+      <label>VAT % (রেটের উপর) <input id="s-vat" type="number" step="0.01"></label>
+      <label>Invoice No. Prefix <input id="s-prefix"></label>
+      <label>Next Invoice Number <input id="s-next" type="number"></label>
+    </div>
+    <button class="btn-p" onclick="saveSettings()">সেভ করুন</button>
+  </div>
+</div>
+
+<!-- ================= INVOICE PREVIEW ================= -->
+<div id="invoice">
+  <div class="co">
+    <h1 id="v-co"></h1>
+    <p id="v-ad1"></p>
+    <p id="v-ad2"></p>
+  </div>
+  <h2>Sales Invoice</h2>
+  <div class="meta">
+    <table>
+      <tr><td>Date :</td><td id="v-date"></td></tr>
+      <tr><td>Invoice No.:</td><td id="v-no"></td></tr>
+      <tr><td>Party Name :</td><td class="party" id="v-party"></td></tr>
+    </table>
+    <table>
+      <tr><td>MPO Name :</td><td id="v-mpo"></td></tr>
+      <tr><td>Mobile No :</td><td id="v-mob"></td></tr>
+      <tr><td>Area :</td><td id="v-area"></td></tr>
+    </table>
+  </div>
+
+  <table class="inv">
+    <thead><tr>
+      <th>SL #</th><th style="text-align:left">Name of the Item</th><th>Description</th><th>Rate<br>(BDT)</th><th>Vat</th>
+      <th>Qty/Unit</th><th>Total Price</th><th>Total<br>Vat</th><th>Disc.<br>(BDT)</th><th>Amount<br>(BDT)</th><th>Bonus</th>
+    </tr></thead>
+    <tbody id="v-rows"></tbody>
+    <tfoot>
+      <tr><td colspan="5" class="lab">Sub Total :</td><td class="c" id="t-qty"></td><td class="r" id="t-price"></td><td class="r" id="t-vat"></td><td class="r" id="t-disc"></td><td class="r" id="t-amt"></td><td class="r" id="t-bonus"></td></tr>
+      <tr><td colspan="5" class="lab">Add &amp; Less :</td><td colspan="4"></td><td class="r" id="t-adj"></td><td></td></tr>
+      <tr><td colspan="5" class="lab">Invoice Total :</td><td colspan="4"></td><td class="r" id="t-total" style="font-size:14px"></td><td></td></tr>
+    </tfoot>
+  </table>
+  <p class="words">Amount Chargeable (in word) : &nbsp;&nbsp; <span id="v-words"></span></p>
+  <p class="narr">Narration : <span id="v-narr"></span></p>
+  <div class="sign"><div>Received By</div><div>MPO Signature</div><div>Authorized By</div></div>
+</div>
+
+<script>
+/* ---------------- storage ---------------- */
+const LS = k => JSON.parse(localStorage.getItem('alb_'+k) || 'null');
+const SS = (k,v) => localStorage.setItem('alb_'+k, JSON.stringify(v));
+
+let settings = LS('settings') || {
+  co:'Albion Laboratories Ltd. (SPZD)', ad1:'South Rahmat-Nagar, Barbkund,', ad2:'Sitakunda, Chattagram.',
+  mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', vat:17.4, prefix:'ASD', next:60048
+};
+const SEED_PRODUCTS = [
+  {name:'Action XR N', desc:'10X10', rate:149.91, unit:'Box'},
+  {name:'Alfol-Ci (Cap)', desc:'6 x 10', rate:215.88, unit:'Box'},
+  {name:'Allerfen 120mg', desc:'5 X 10', rate:262.35, unit:'Box'},
+  {name:'Allerfen 180 Mg', desc:'2 x 10', rate:134.92, unit:'Box'},
+  {name:'Alvit (A-Z) Gold (5X6)', desc:'5 X 6', rate:215.88, unit:'Box'},
+  {name:'Azithron 500 (Capsule)', desc:'6 x 2', rate:366.99, unit:'Box'},
+  {name:'Azithron Suspension', desc:'', rate:134.92, unit:'Ph'},
+  {name:'Cefuxim CV250', desc:'7 x 2', rate:402.97, unit:'Box'},
+  {name:'Cefuxim-CV500', desc:'7 x 2', rate:692.61, unit:'Box'},
+  {name:'Corafast D', desc:'5 X 10', rate:374.79, unit:'Box'},
+  {name:'Corafast DX', desc:'5 X 10', rate:584.67, unit:'Box'},
+  {name:'Cos-B126 (1 X 30)', desc:'1 X 30', rate:224.87, unit:'Ct'},
+  {name:'Cos-B126 (Pot)', desc:'1 X 30', rate:224.87, unit:'Ct'},
+  {name:'COSGEN-3 (200 MG)', desc:'2 x 6', rate:359.80, unit:'Box'},
+  {name:'COSGEN-3 (Suspension)', desc:'50 ML', rate:157.41, unit:'Ph'},
+  {name:'Epram- 10', desc:'3 x 10', rate:269.85, unit:'Box'},
+  {name:'Esofour 20 Rx', desc:'5 X 14', rate:377.79, unit:'Box'},
+  {name:'Esofour Mups-20', desc:'6 X 10', rate:404.77, unit:'Box'},
+  {name:'Farmberry-', desc:'1', rate:269.85, unit:'Ph'},
+  {name:'Fexoril Susp', desc:'50 ML', rate:41.38, unit:'Ph'},
+  {name:'Flunxit', desc:'10 x 15', rate:596.66, unit:'Box'},
+  {name:'Gastro DS', desc:'1', rate:224.87, unit:'Ph'},
+  {name:'Micason Oral Gel', desc:'10 G', rate:33.73, unit:'Pcs'},
+  {name:'Mimoxclav 625mg', desc:'6 x 4', rate:539.69, unit:'Box'},
+  {name:'Monkon 10mg', desc:'6 x10', rate:863.51, unit:'Box'},
+  {name:'Olanza 10', desc:'5x10', rate:169.40, unit:'Box'},
+  {name:'Olanza-5', desc:'5 X 10', rate:97.44, unit:'Box'},
+  {name:'Plator', desc:'5 X 10', rate:449.74, unit:'Box'},
+  {name:'Pregabid 50', desc:'6 x 10', rate:755.57, unit:'Box'},
+  {name:'Pregabid 75', desc:'3 x 10', rate:485.72, unit:'Box'},
+  {name:'Pregabid CR 82.5', desc:'3 X 10', rate:449.74, unit:'Box'},
+  {name:'Pregabid- 25', desc:'10 x 5', rate:359.80, unit:'Box'},
+  {name:'Renaliv Met-2.5/500', desc:'5 X 10', rate:494.72, unit:'Box'},
+  {name:'Rislock-1', desc:'5 X 10', rate:112.44, unit:'Box'},
+  {name:'Rislock-2', desc:'5 X 10', rate:224.87, unit:'Box'},
+  {name:'Rislock-4', desc:'5 X 10', rate:337.31, unit:'Box'},
+  {name:'Rozavas-10', desc:'5 X 10', rate:899.49, unit:'Box'},
+  {name:'Sariton 200 Mg', desc:'3 X 10', rate:179.90, unit:'Box'},
+  {name:'Trazapin 15', desc:'3 X10', rate:224.87, unit:'Box'},
+  {name:'Trazapin- 7.5', desc:'5 x 10', rate:269.85, unit:'Box'},
+  {name:'Voricol 200', desc:'2 X 4', rate:719.59, unit:'Box'}
+];
+/* === কোম্পানির ইনভয়েস থেকে এন্ট্রি করা ডেটা (Arena agent maintained) === */
+const SEED_HISTORY = [
+  {no:'ASD59321', date:'2026-08-06', party:'03B Maa Pharmacy.( Chanpur Bazar Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20161.90, total:20161.90,
+   items:[
+    {name:'Alfol-Ci (Cap)',desc:'6 x 10',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Azithron Suspension',desc:'',rate:134.92,qty:10,unit:'Ph',disc:0,bonus:1},
+    {name:'Azithron 500 (Capsule)',desc:'6 x 2',rate:366.99,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:3,unit:'Box',disc:0,bonus:0},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:10,unit:'Ph',disc:0,bonus:2},
+    {name:'Micason Oral Gel',desc:'10 G',rate:33.73,qty:10,unit:'Pcs',disc:0,bonus:1},
+    {name:'Rislock-1',desc:'5 X 10',rate:112.44,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-2',desc:'5 X 10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Sariton 200 Mg',desc:'3 X 10',rate:179.90,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Voricol 200',desc:'2 X 4',rate:719.59,qty:3,unit:'Box',disc:0,bonus:1}
+   ]},
+  {no:'ASD59322', date:'2026-08-06', party:'03b Soydul Hoque Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20662.40, total:20662.40,
+   items:[
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:20,unit:'Box',disc:0,bonus:2}
+   ]},
+  {no:'ASD60047', date:'2026-09-03', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:2391.83, total:2391.83,
+   items:[
+    {name:'Pregabid 50',desc:'6 x 10',rate:755.57,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid CR 82.5',desc:'3 X 10',rate:449.74,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-2',desc:'5 X 10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-4',desc:'5 X 10',rate:337.31,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin- 7.5',desc:'5 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD59323', date:'2026-08-06', party:'03b Suruchi Pharmacy.(Gunagori Kasmohal Bansha.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:29733.46, total:29733.46,
+   items:[
+    {name:'Cefuxim CV250',desc:'7 x 2',rate:402.97,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:15,unit:'Box',disc:0,bonus:1},
+    {name:'Cos-B126 (1 X 30)',desc:'1 X 30',rate:224.87,qty:10,unit:'Ct',disc:0,bonus:1},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Monkon 10mg',desc:'6 x10',rate:863.51,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid 50',desc:'6 x 10',rate:755.57,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD58392', date:'2026-07-02', party:'03b Suruchi Pharmacy.(Gunagori Kasmohal Bansha.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:21296.00, total:21296.00,
+   items:[
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Cos-B126 (1 X 30)',desc:'1 X 30',rate:224.87,qty:10,unit:'Ct',disc:0,bonus:1},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Rozavas-10',desc:'5 X 10',rate:899.49,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASR0011527', date:'2026-06-04', party:'03B Maa Pharmacy.( Chanpur Bazar Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20142.40, total:20142.40,
+   items:[
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:20,unit:'Box',disc:0,bonus:2},
+    {name:'Allerfen 120mg',desc:'5 X 10',rate:262.35,qty:5,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:5,unit:'Box',disc:0,bonus:0},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:20,unit:'Ph',disc:0,bonus:4},
+    {name:'Micason Oral Gel',desc:'10 G',rate:33.73,qty:5,unit:'Pcs',disc:0,bonus:0},
+    {name:'Rislock-1',desc:'5 X 10',rate:112.44,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rozavas-10',desc:'5 X 10',rate:899.49,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Sariton 200 Mg',desc:'3 X 10',rate:179.90,qty:10,unit:'Box',disc:0,bonus:1}
+   ]},
+  {no:'ASR0011526', date:'2026-06-04', party:'03b Soydul Hoque Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20229.60, total:20229.60,
+   items:[
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Cefuxim CV250',desc:'7 x 2',rate:402.97,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:35,unit:'Ph',disc:0,bonus:7}
+   ]},
+  {no:'ASR0011531', date:'2026-06-04', party:'03b Suruchi Pharmacy.(Gunagori Kasmohal Bansha.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:22587.84, total:22587.84,
+   items:[
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:20,unit:'Box',disc:0,bonus:2},
+    {name:'Cos-B126 (Pot)',desc:'1 X 30',rate:224.87,qty:10,unit:'Ct',disc:0,bonus:1},
+    {name:'Farmberry-',desc:'1',rate:269.85,qty:1,unit:'Ph',disc:0,bonus:0},
+    {name:'Olanza-5',desc:'5 X 10',rate:97.44,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid- 25',desc:'10 x 5',rate:359.80,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid 75',desc:'3 x 10',rate:485.72,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-4',desc:'5 X 10',rate:337.31,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD56340', date:'2026-04-09', party:'03b Soydul Hoque Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20556.90, total:20556.90,
+   items:[
+    {name:'Allerfen 180 Mg',desc:'2 x 10',rate:134.92,qty:5,unit:'Box',disc:0,bonus:1},
+    {name:'Alfol-Ci (Cap)',desc:'6 x 10',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Cefuxim CV250',desc:'7 x 2',rate:402.97,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:20,unit:'Ph',disc:0,bonus:4},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD55768', date:'2026-03-12', party:'03b Soydul Hoque Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:20366.80, total:20366.80,
+   items:[
+    {name:'Cefuxim-CV500',desc:'7 x 2',rate:692.61,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:20,unit:'Ph',disc:0,bonus:4}
+   ]},
+  {no:'ASD54933', date:'2026-02-10', party:'03B Sayed Pharmacy. (Banigram, Banshkhali)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:13362.00, total:13362.00,
+   items:[
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Allerfen 120mg',desc:'5 X 10',rate:262.35,qty:10,unit:'Box',disc:0,bonus:2},
+    {name:'Allerfen 180 Mg',desc:'2 x 10',rate:134.92,qty:10,unit:'Box',disc:0,bonus:2},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Fexoril Susp',desc:'50 ML',rate:41.38,qty:20,unit:'Ph',disc:0,bonus:4},
+    {name:'Micason Oral Gel',desc:'10 G',rate:33.73,qty:20,unit:'Pcs',disc:0,bonus:2}
+   ]},
+  {no:'ASD54711', date:'2026-02-05', party:'03b Nasir Pharmacy.( Chanpur Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:4623.17, total:4623.17,
+   items:[
+    {name:'COSGEN-3 (Suspension)',desc:'50 ML',rate:157.41,qty:10,unit:'Ph',disc:0,bonus:2},
+    {name:'Cefuxim CV250',desc:'7 x 2',rate:402.97,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Mimoxclav 625mg',desc:'6 x 4',rate:539.69,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:2,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD54713', date:'2026-02-05', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:2687.52, total:2687.52,
+   items:[
+    {name:'Esofour 20 Rx',desc:'5 X 14',rate:377.79,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid CR 82.5',desc:'3 X 10',rate:449.74,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-1',desc:'5 X 10',rate:112.44,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rozavas-10',desc:'5 X 10',rate:899.49,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD54710', date:'2026-02-05', party:'03B Maa Pharmacy.( Chanpur Bazar Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:19868.66, total:19868.66,
+   items:[
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Allerfen 120mg',desc:'5 X 10',rate:262.35,qty:5,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast D',desc:'5 X 10',rate:374.79,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Corafast DX',desc:'5 X 10',rate:584.67,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'COSGEN-3 (200 MG)',desc:'2 x 6',rate:359.80,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'COSGEN-3 (Suspension)',desc:'50 ML',rate:157.41,qty:10,unit:'Ph',disc:0,bonus:2},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid 50',desc:'6 x 10',rate:755.57,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD53996', date:'2026-01-15', party:'03b Bismillah Pharmacy.( Gunagori Banshakhali Ctg.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:515.68, total:515.68,
+   items:[
+    {name:'Epram- 10',desc:'3 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Olanza 10',desc:'5x10',rate:169.40,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD53087', date:'2025-12-18', party:'03b Brothers Pharmacy.( Shadanpur Gunaghuri.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:16508.80, total:16508.80,
+   items:[
+    {name:'Cos-B126 (1 X 30)',desc:'1 X 30',rate:224.87,qty:10,unit:'Ct',disc:0,bonus:1},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Flunxit',desc:'10 x 15',rate:596.66,qty:10,unit:'Box',disc:0,bonus:1},
+    {name:'Sariton 200 Mg',desc:'3 X 10',rate:179.90,qty:10,unit:'Box',disc:0,bonus:1}
+   ]},
+  {no:'ASD55118', date:'2026-02-19', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:2254.56, total:2254.56,
+   items:[
+    {name:'Farmberry-',desc:'1',rate:269.85,qty:1,unit:'Ph',disc:0,bonus:0},
+    {name:'Monkon 10mg',desc:'6 x10',rate:863.51,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-4',desc:'5 X 10',rate:337.31,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Gastro DS',desc:'1',rate:224.87,qty:1,unit:'Ph',disc:0,bonus:0}
+   ]},
+  {no:'ASD50126', date:'2025-09-15', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:3588.63, total:3588.63,
+   items:[
+    {name:'Monkon 10mg',desc:'6 x10',rate:863.51,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Plator',desc:'5 X 10',rate:449.74,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Olanza 10',desc:'5x10',rate:169.40,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Rozavas-10',desc:'5 X 10',rate:899.49,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-2',desc:'5 X 10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0}
+   ]},
+  {no:'ASD50127', date:'2025-09-15', party:'03b Nasir Pharmacy.( Chanpur Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:8947.82, total:8947.82,
+   items:[
+    {name:'Action XR N',desc:'10X10',rate:149.91,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Alvit (A-Z) Gold (5X6)',desc:'5 X 6',rate:215.88,qty:6,unit:'Box',disc:0,bonus:0},
+    {name:'Renaliv Met-2.5/500',desc:'5 X 10',rate:494.72,qty:4,unit:'Box',disc:0,bonus:0},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:10,unit:'Box',disc:0,bonus:1}
+   ]}
+];
+let products = LS('products') || [];
+let history = LS('history') || [];
+let parties = LS('parties') || [];
+// merge seed (নতুন এন্ট্রি থাকলে যোগ হবে, আপনার নিজের ডেটা মুছবে না)
+SEED_PRODUCTS.forEach(p=>{ if(!products.some(x=>x.name===p.name)) products.push(p); });
+SEED_HISTORY.forEach(h=>{ const ex=history.find(x=>x.no===h.no); if(!ex) history.push(h); else if((h.paid||0)>(ex.paid||0)) ex.paid=h.paid; if(!parties.includes(h.party)) parties.push(h.party); });
+history.sort((a,b)=> (b.date+b.no).localeCompare(a.date+a.no));
+products.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}));
+SS('products',products); SS('history',history); SS('parties',parties);
+
+const $ = id => document.getElementById(id);
+const fmt = n => (Math.round(n*100)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ---------------- tabs ---------------- */
+function showTab(n,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  $('tab-'+n).classList.add('active'); btn.classList.add('active');
+  if(n==='prod') renderProducts(); if(n==='hist') renderHistory(); if(n==='set') loadSettings();
+}
+
+/* ---------------- items ---------------- */
+function addRow(d={}){
+  const tb = $('items').tBodies[0];
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="sl"></td>
+    <td><input class="i-name" list="prodList" value="${d.name||''}" oninput="pickProduct(this)"></td>
+    <td><input class="i-desc" value="${d.desc||''}"></td>
+    <td><input class="i-rate" type="number" step="0.001" value="${d.rate??''}"></td>
+    <td><input class="i-qty" type="number" value="${d.qty??''}"></td>
+    <td><input class="i-unit" value="${d.unit||'Box'}"></td>
+    <td><input class="i-disc" type="number" step="0.01" value="${d.disc??0}"></td>
+    <td><input class="i-bonus" type="number" step="0.01" value="${d.bonus??0}"></td>
+    <td><button class="btn-r btn-sm" onclick="this.closest('tr').remove();render()">✕</button></td>`;
+  tr.querySelectorAll('input').forEach(i=>i.addEventListener('input',render));
+  tb.appendChild(tr); render();
+}
+function pickProduct(inp){
+  const p = products.find(x=>x.name===inp.value);
+  if(p){ const tr=inp.closest('tr'); tr.querySelector('.i-desc').value=p.desc; tr.querySelector('.i-rate').value=p.rate; tr.querySelector('.i-unit').value=p.unit||'Box'; render(); }
+}
+function getItems(){
+  return [...$('items').tBodies[0].rows].map(tr=>({
+    name:tr.querySelector('.i-name').value, desc:tr.querySelector('.i-desc').value,
+    rate:+tr.querySelector('.i-rate').value||0, qty:+tr.querySelector('.i-qty').value||0,
+    unit:tr.querySelector('.i-unit').value, disc:+tr.querySelector('.i-disc').value||0,
+    bonus:+tr.querySelector('.i-bonus').value||0
+  }));
+}
+
+/* ---------------- render invoice ---------------- */
+function render(){
+  $('v-co').textContent=settings.co; $('v-ad1').textContent=settings.ad1; $('v-ad2').textContent=settings.ad2;
+  const d=$('f-date').value; $('v-date').textContent = d? d.split('-').reverse().join('-') : '';
+  $('v-no').textContent=$('f-no').value; $('v-party').textContent=$('f-party').value;
+  $('v-mpo').textContent=$('f-mpo').value; $('v-mob').textContent=$('f-mob').value; $('v-area').textContent=$('f-area').value;
+  $('v-narr').textContent=$('f-narr').value;
+
+  const vatP = settings.vat/100;
+  let tq=0,tp=0,tv=0,td=0,ta=0,tb=0, html='';
+  getItems().forEach((it,i)=>{
+    $('items').tBodies[0].rows[i].querySelector('.sl').textContent=i+1;
+    const R2=x=>Math.round(x*100+1e-6)/100; const vat=R2(it.rate*vatP), price=R2(it.rate*it.qty), tvat=R2(vat*it.qty), amt=R2(price+tvat-it.disc);
+    tq+=it.qty; tp+=price; tv+=tvat; td+=it.disc; ta+=amt; tb+=it.bonus;
+    html+=`<tr><td class="c">${i+1}</td><td>${it.name}</td><td class="c">${it.desc}</td>
+      <td class="r">${it.rate.toFixed(3)}</td><td class="r">${vat.toFixed(2)}</td><td class="c">${it.qty} ${it.unit}</td>
+      <td class="r">${fmt(price)}</td><td class="r">${fmt(tvat)}</td><td class="r">${fmt(it.disc)}</td>
+      <td class="r" style="font-size:13px">${fmt(amt)}</td><td class="r">${it.bonus.toFixed(2)}</td></tr>`;
+  });
+  $('v-rows').innerHTML=html;
+  const adj=+$('f-adj').value||0, total=ta+adj;
+  $('t-qty').textContent=tq; $('t-price').textContent=fmt(tp); $('t-vat').textContent=fmt(tv);
+  $('t-disc').textContent=fmt(td); $('t-amt').textContent=fmt(ta); $('t-bonus').textContent=tb.toFixed(2);
+  $('t-adj').textContent= adj? fmt(adj):''; $('t-total').textContent=fmt(total);
+  $('v-words').textContent='(BDT) '+toWords(total);
+}
+
+/* ---------------- number to words ---------------- */
+function toWords(n){
+  const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const w=x=>{ if(x<20)return a[x]; if(x<100)return b[Math.floor(x/10)]+(x%10?' '+a[x%10]:''); if(x<1000)return a[Math.floor(x/100)]+' Hundred'+(x%100?' '+w(x%100):'');
+    if(x<100000)return w(Math.floor(x/1000))+' Thousand'+(x%1000?' '+w(x%1000):''); if(x<10000000)return w(Math.floor(x/100000))+' Lakh'+(x%100000?' '+w(x%100000):'');
+    return w(Math.floor(x/10000000))+' Crore'+(x%10000000?' '+w(x%10000000):''); };
+  n=Math.round(n*100)/100; const tk=Math.floor(n), ps=Math.round((n-tk)*100);
+  if(!tk&&!ps) return 'Zero Only';
+  return (tk?w(tk):'')+(ps?(tk?' and ':'')+w(ps)+' Paisa':'')+' Only';
+}
+
+/* ---------------- products ---------------- */
+function addProduct(){
+  const name=$('p-name').value.trim(); if(!name) return;
+  const i=products.findIndex(p=>p.name===name);
+  const p={name,desc:$('p-desc').value,rate:+$('p-rate').value||0,unit:$('p-unit').value||'Box'};
+  i>=0? products[i]=p : products.push(p); products.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}));
+  SS('products',products); $('p-name').value=$('p-desc').value=$('p-rate').value=''; renderProducts();
+}
+function delProduct(i){ products.splice(i,1); SS('products',products); renderProducts(); }
+function renderProducts(){
+  $('prodTable').tBodies[0].innerHTML = products.map((p,i)=>`<tr><td style="text-align:center">${i+1}</td><td>${p.name}</td><td>${p.desc}</td><td style="text-align:right">${p.rate.toFixed(3)}</td><td>${p.unit||'Box'}</td>
+    <td><button class="btn-r btn-sm" onclick="delProduct(${i})">মুছুন</button></td></tr>`).join('');
+  let dl=$('prodList'); if(!dl){dl=document.createElement('datalist');dl.id='prodList';document.body.appendChild(dl);}
+  dl.innerHTML=products.map(p=>`<option value="${p.name}">`).join('');
+  $('partyList').innerHTML=parties.map(p=>`<option value="${p}">`).join('');
+}
+
+/* ---------------- history / collection ---------------- */
+function saveInvoice(){
+  const no=$('f-no').value.trim(); if(!no) return alert('Invoice No. দিন');
+  const party=$('f-party').value.trim(); if(party && !parties.includes(party)){parties.push(party);SS('parties',parties);}
+  const total=parseFloat($('t-total').textContent.replace(/,/g,''))||0;
+  const rec={no,date:$('f-date').value,party,mpo:$('f-mpo').value,mob:$('f-mob').value,area:$('f-area').value,
+    adj:+$('f-adj').value||0,narr:$('f-narr').value,items:getItems(),total};
+  const i=history.findIndex(h=>h.no===no);
+  if(i>=0){rec.paid=history[i].paid||0;history[i]=rec;} else {rec.paid=0;history.unshift(rec);
+    const num=parseInt(no.replace(/\D/g,'')); if(num>=settings.next){settings.next=num+1;SS('settings',settings);} }
+  SS('history',history); renderProducts(); alert('সেভ হয়েছে ✔');
+}
+function loadInvoice(i){
+  const h=history[i]; $('f-no').value=h.no;$('f-date').value=h.date;$('f-party').value=h.party;$('f-mpo').value=h.mpo;
+  $('f-mob').value=h.mob;$('f-area').value=h.area;$('f-adj').value=h.adj;$('f-narr').value=h.narr;
+  $('items').tBodies[0].innerHTML=''; h.items.forEach(addRow); render();
+  showTab('inv',document.querySelector('.tabs button'));
+}
+function addPayment(i){
+  const v=prompt('কত টাকা জমা হলো?', (history[i].total-history[i].paid).toFixed(2)); if(v===null) return;
+  history[i].paid=(history[i].paid||0)+(+v||0); SS('history',history); renderHistory();
+}
+function delHist(i){ if(confirm('মুছে ফেলবেন?')){history.splice(i,1);SS('history',history);renderHistory();} }
+function renderHistory(){
+  let due=0;
+  $('histTable').tBodies[0].innerHTML=history.map((h,i)=>{const d=h.total-(h.paid||0);due+=d;
+    return `<tr><td>${h.date}</td><td>${h.no}</td><td>${h.party}</td><td style="text-align:right">${fmt(h.total)}</td>
+    <td style="text-align:right" class="paid">${fmt(h.paid||0)}</td><td style="text-align:right" class="${d>0.5?'due':'paid'}">${fmt(d)}</td>
+    <td><button class="btn-g btn-sm" onclick="addPayment(${i})">জমা</button> <button class="btn-p btn-sm" onclick="loadInvoice(${i})">খুলুন</button> <button class="btn-r btn-sm" onclick="delHist(${i})">✕</button></td></tr>`;}).join('');
+  $('totalDue').textContent=fmt(due);
+  let sale=0,paid=0,pm={};
+  history.forEach(h=>{sale+=h.total;paid+=h.paid||0;const p=pm[h.party]||(pm[h.party]={n:0,t:0,p:0});p.n++;p.t+=h.total;p.p+=h.paid||0;});
+  $('totalSale').textContent=fmt(sale);$('totalPaid').textContent=fmt(paid);
+  $('partyTable').tBodies[0].innerHTML=Object.entries(pm).map(([k,v])=>`<tr><td>${k}</td><td style="text-align:center">${v.n}</td><td style="text-align:right">${fmt(v.t)}</td><td style="text-align:right" class="paid">${fmt(v.p)}</td><td style="text-align:right" class="${v.t-v.p>0.5?'due':'paid'}">${fmt(v.t-v.p)}</td></tr>`).join('');
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify({settings,products,history,parties})],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sazzad-mpo-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function importData(inp){
+  const f=inp.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);settings=d.settings||settings;products=d.products||products;history=d.history||history;parties=d.parties||parties;
+    SS('settings',settings);SS('products',products);SS('history',history);SS('parties',parties);alert('রিস্টোর হয়েছে ✔');location.reload();}catch{alert('ফাইল ঠিক নেই');}};
+  r.readAsText(f);
+}
+
+/* ---------------- settings ---------------- */
+function loadSettings(){ ['co','ad1','ad2','mpo','mob','area','vat','prefix','next'].forEach(k=>$('s-'+k).value=settings[k]); }
+function saveSettings(){ ['co','ad1','ad2','mpo','mob','area','prefix'].forEach(k=>settings[k]=$('s-'+k).value);
+  settings.vat=+$('s-vat').value||0; settings.next=+$('s-next').value||1; SS('settings',settings); render(); alert('সেভ হয়েছে ✔'); }
+
+/* ---------------- new invoice ---------------- */
+function newInvoice(){
+  $('f-date').value=new Date().toISOString().slice(0,10);
+  $('f-no').value=settings.prefix+settings.next;
+  $('f-party').value=''; $('f-mpo').value=settings.mpo; $('f-mob').value=settings.mob; $('f-area').value=settings.area;
+  $('f-adj').value=0; $('f-narr').value='';
+  $('items').tBodies[0].innerHTML=''; addRow(); render();
+}
+['f-date','f-no','f-party','f-mpo','f-mob','f-area'].forEach(id=>$(id).addEventListener('input',render));
+
+/* ---------------- PWA ---------------- */
+(function(){
+  const base=location.href.split('#')[0].split('?')[0];
+  const man={name:'Sazzad MPO - Albion Invoice',short_name:'Sazzad MPO',description:'Albion Laboratories (SPZD) Sales Invoice & Collection - Banshakhali',
+    start_url:base,scope:base.substring(0,base.lastIndexOf('/')+1),display:'standalone',background_color:'#1a4d8f',theme_color:'#1a4d8f',lang:'bn',
+    icons:[{src:'data:image/png;base64,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',sizes:'192x192',type:'image/png'},{src:'data:image/png;base64,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',sizes:'512x512',type:'image/png'},{src:'data:image/png;base64,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',sizes:'512x512',type:'image/png',purpose:'maskable'}]};
+  document.getElementById('manifestLink').href='data:application/manifest+json,'+encodeURIComponent(JSON.stringify(man));
+})();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; $('installBtn').style.display='inline-block'; });
+function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null;$('installBtn').style.display='none';}); }
+window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
+renderProducts(); newInvoice();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a417f2193ac98620',t:'MTc5MDQ4NTIzNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
