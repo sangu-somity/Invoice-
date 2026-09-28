@@ -98,8 +98,20 @@
   #khataPrint h3{margin:0;text-align:center;font-size:18px} #khataPrint .sub{text-align:center;margin:2px 0;font-size:12px}
   #khataPrint table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px} #khataPrint th,#khataPrint td{border:1px solid #999;padding:4px 5px} #khataPrint th{background:#f1f1f1} #khataPrint .r{text-align:right}
   #khTable td,#khTable th{padding:5px 6px}
+  #memo{background:#fff;color:#000;padding:18px;border:1px solid #ccc;max-width:800px;margin:10px auto;font-size:12px}
+  #memo h3{margin:0;text-align:center;font-size:20px;color:#00695c} #memo .sub{text-align:center;margin:1px 0;font-size:12px}
+  #memo table{width:100%;border-collapse:collapse;margin-top:8px} #memo th,#memo td{border:1px solid #666;padding:4px 5px} #memo th{background:#e0f2f1} #memo .r{text-align:right}
+  #memo .badge-m{display:inline-block;border:2px solid #00695c;color:#00695c;padding:2px 12px;border-radius:4px;font-weight:bold;margin:6px auto;font-size:14px}
+  #mTable td input{width:100%;box-sizing:border-box;padding:3px} #mTable td{padding:3px}
+  body.dark #memo{background:#fff;color:#000}
+  @media (max-width:800px){#memo{padding:10px;overflow-x:auto}}
   @media print{
     body{background:#fff}
+    body.print-mrp .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
+    body.print-mrp .panel>*:not(#tab-mrp){display:none!important}
+    body.print-mrp #tab-mrp>*:not(#memo){display:none!important}
+    body.print-mrp #memo{border:none;max-width:none;margin:0;padding:0}
+    body.print-mrp #invoice{display:none!important}
     body.print-kh .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
     body.print-kh .panel>*:not(#tab-kh){display:none!important}
     body.print-kh #tab-kh>*:not(#khataPrint){display:none!important}
@@ -140,6 +152,7 @@
     <button onclick="showTab('hist',this)">📒 হিসাব / বকেয়া</button>
     <button onclick="showTab('st',this)">🧾 স্টেটমেন্ট</button>
     <button onclick="showTab('kh',this)" style="border-color:#8e24aa">📔 বাকির খাতা</button>
+    <button onclick="showTab('mrp',this)" style="border-color:#00695c">🏷️ MRP বিক্রি</button>
     <button onclick="showTab('route',this)">🛵 আজকের রুট</button>
     <button onclick="showTab('rp',this)">📊 মাসিক রিপোর্ট</button>
     <button onclick="showTab('shop',this)">🏪 দোকান</button>
@@ -259,6 +272,62 @@
     <p class="hint" style="margin-top:14px">💡 আগে "শুধু টাকার এন্ট্রি" দিয়ে যেগুলো লিখেছিলেন সেগুলো এই খাতায় সরাতে চাইলে: <button class="btn-s btn-sm" onclick="khMigrate()">টাকার এন্ট্রিগুলো খাতায় সরান</button></p>
   </div>
 
+  <!-- ---- MRP tab (fully separate: own products, memos, accounts) ---- -->
+  <div id="tab-mrp" class="tab">
+    <h2 style="color:#00695c">🏷️ MRP বিক্রি <span class="hint" style="font-weight:normal">— নিজস্ব Cash Memo, MRP দামে। সম্পূর্ণ আলাদা হিসাব; কোম্পানির ইনভয়েস/হিসাবের সাথে মেশে না।</span></h2>
+    <div class="tabs" style="margin-bottom:8px">
+      <button class="active" onclick="mrpSub('new',this)">🧾 নতুন মেমো</button>
+      <button onclick="mrpSub('list',this)">📒 মেমো তালিকা / বকেয়া</button>
+      <button onclick="mrpSub('prod',this)">💊 MRP প্রোডাক্ট</button>
+      <button onclick="mrpSub('set',this)">⚙️ মেমো সেটিংস</button>
+    </div>
+
+    <div id="mrp-new" class="mrpsub">
+      <div class="row">
+        <label>মেমো নং <input id="m-no" readonly style="background:#eee"></label>
+        <label>তারিখ <input type="date" id="m-date"></label>
+        <label style="flex:2 1 220px">পার্টি <input id="m-party" list="m-plist" placeholder="পার্টির নাম"><datalist id="m-plist"></datalist></label>
+        <label>পার্টির মোবাইল <input id="m-phone" placeholder="01XXXXXXXXX"></label>
+      </div>
+      <div style="overflow-x:auto"><table id="mTable" class="inv" style="width:100%"><thead><tr><th>#</th><th style="min-width:180px">প্রোডাক্ট</th><th>প্যাক</th><th>MRP/বক্স</th><th>বক্স (Qty)</th><th>টাকা</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="row" style="margin-top:6px"><button class="btn-s" onclick="mAddRow()">+ আইটেম</button></div>
+      <div class="row" style="align-items:center">
+        <label>ডিসকাউন্ট % <input type="number" id="m-disc" step="0.01" value="0" oninput="mCalc()" style="width:90px"></label>
+        <label style="flex:2 1 200px">নোট <input id="m-note" placeholder="যেমন: বিকাশে পরিশোধ"></label>
+        <label>এখন জমা <input type="number" id="m-paid" step="0.01" value="0" style="width:110px"></label>
+      </div>
+      <div class="cards"><div class="card"><b id="m-sub">0</b><span>সাব টোটাল</span></div><div class="card"><b id="m-dsc">0</b><span>ডিসকাউন্ট</span></div><div class="card"><b id="m-tot" style="color:#00695c">0</b><span>মেমো টোটাল</span></div></div>
+      <div class="row">
+        <button class="btn-g" onclick="mSave()">💾 মেমো সেভ</button>
+        <button class="btn-p" onclick="mPrint()">🖨️ প্রিন্ট / PDF</button>
+        <button class="btn-s" onclick="mNew()">🆕 নতুন</button>
+      </div>
+      <div id="memo"></div>
+    </div>
+
+    <div id="mrp-list" class="mrpsub" style="display:none">
+      <div class="cards"><div class="card"><b id="ml-cnt">0</b><span>মেমো</span></div><div class="card"><b id="ml-tot">0</b><span>মোট বিক্রি</span></div><div class="card"><b id="ml-paid" style="color:#2e7d32">0</b><span>জমা</span></div><div class="card"><b id="ml-due" style="color:#c62828">0</b><span>বকেয়া</span></div></div>
+      <div class="row"><label style="flex:2 1 220px">পার্টি ফিল্টার <select id="ml-party" onchange="renderMemoList()"><option value="">— সব পার্টি —</option></select></label><button class="btn-p" onclick="mStatementPrint()">🖨️ পার্টি স্টেটমেন্ট</button></div>
+      <div style="overflow-x:auto"><table class="inv" id="mlTable" style="width:100%"><thead><tr><th>তারিখ</th><th>মেমো</th><th>পার্টি</th><th class="r">টোটাল</th><th class="r">জমা</th><th class="r">বকেয়া</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div id="mrp-prod" class="mrpsub" style="display:none">
+      <p class="hint">এখানে প্রতি বক্সের MRP লিখে রাখুন — মেমোতে প্রোডাক্ট বাছলে অটো বসবে। হলুদ ঘর = MRP এখনো দেওয়া হয়নি। কোম্পানির TP লিস্টের সাথে এর কোনো সম্পর্ক নেই।</p>
+      <div class="row"><input id="mp-search" placeholder="🔍 খুঁজুন" oninput="renderMrpProducts()" style="flex:1"><button class="btn-g" onclick="mpAdd()">+ নতুন প্রোডাক্ট</button></div>
+      <div style="overflow-x:auto"><table class="inv" id="mpTable" style="width:100%"><thead><tr><th>প্রোডাক্ট</th><th>প্যাক</th><th style="width:110px">MRP / বক্স</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div id="mrp-set" class="mrpsub" style="display:none">
+      <div class="row">
+        <label style="flex:2 1 220px">মেমোর শিরোনাম <input id="ms-title" placeholder="Sazzad Medicine Supply"></label>
+        <label>নাম <input id="ms-name"></label><label>মোবাইল <input id="ms-mob"></label>
+        <label style="flex:2 1 220px">ঠিকানা <input id="ms-addr" placeholder="Banshkhali, Chattogram"></label>
+        <label>পরবর্তী মেমো নং <input type="number" id="ms-next" min="1"></label>
+      </div>
+      <button class="btn-g" onclick="mrpSaveSettings()">সেভ</button>
+    </div>
+  </div>
+
   <!-- ---- Route tab ---- -->
   <div id="tab-route" class="tab">
     <h2>🛵 আজকের কালেকশন রুট</h2>
@@ -304,7 +373,7 @@
   <!-- ---- Settings tab ---- -->
   <div id="tab-set" class="tab">
     <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
-    <p class="hint">অ্যাপ ভার্সন: <b>v10</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
+    <p class="hint">অ্যাপ ভার্সন: <b>v16</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
     <div class="row">
       <label>Company Name <input id="s-co"></label>
       <label>Address line 1 <input id="s-ad1"></label>
@@ -445,19 +514,29 @@ const SEED_PRODUCTS = [
   {name:'Cos-B126 (Pot)', desc:'1 X 30', rate:224.87, unit:'Ct'},
   {name:'COSGEN-3 (200 MG)', desc:'2 x 6', rate:359.80, unit:'Box'},
   {name:'COSGEN-3 (Suspension)', desc:'50 ML', rate:157.41, unit:'Ph'},
+  {name:'Epival Chrono-300', desc:'5 X 10', rate:337.31, unit:'Box'},
   {name:'Epram- 10', desc:'3 x 10', rate:269.85, unit:'Box'},
+  {name:'Epram- 5', desc:'5 X 10', rate:247.36, unit:'Box'},
   {name:'Esofour 20 Rx', desc:'5 X 14', rate:377.79, unit:'Box'},
   {name:'Esofour Mups-20', desc:'6 X 10', rate:404.77, unit:'Box'},
   {name:'Farmberry-', desc:'1', rate:269.85, unit:'Ph'},
   {name:'Fexoril Susp', desc:'50 ML', rate:41.38, unit:'Ph'},
   {name:'Flunxit', desc:'10 x 15', rate:596.66, unit:'Box'},
   {name:'Gastro DS', desc:'1', rate:224.87, unit:'Ph'},
+  {name:'Glirol 80mg', desc:'5 x 10', rate:269.85, unit:'Box'},
+  {name:'Livacor 300', desc:'3 x 10', rate:620.65, unit:'Box'},
+  {name:'Lowet 120', desc:'3 X 6', rate:890.49, unit:'Box'},
   {name:'Micason Oral Gel', desc:'10 G', rate:33.73, unit:'Pcs'},
   {name:'Mimoxclav 625mg', desc:'6 x 4', rate:539.69, unit:'Box'},
   {name:'Monkon 10mg', desc:'6 x10', rate:863.51, unit:'Box'},
   {name:'Olanza 10', desc:'5x10', rate:169.40, unit:'Box'},
   {name:'Olanza-5', desc:'5 X 10', rate:97.44, unit:'Box'},
+  {name:'Olme AM', desc:'3 X 10', rate:296.83, unit:'Box'},
+  {name:'Olme- 20', desc:'3 x 10', rate:215.88, unit:'Box'},
+  {name:'Olme-H20 (RX)', desc:'3 X 10', rate:191.14, unit:'Box'},
+  {name:'Picloza 25', desc:'5 X 10', rate:112.44, unit:'Box'},
   {name:'Plator', desc:'5 X 10', rate:449.74, unit:'Box'},
+  {name:'Plator Plus', desc:'5 x 10', rate:539.69, unit:'Box'},
   {name:'Pregabid 50', desc:'6 x 10', rate:755.57, unit:'Box'},
   {name:'Pregabid 75', desc:'3 x 10', rate:485.72, unit:'Box'},
   {name:'Pregabid CR 82.5', desc:'3 X 10', rate:449.74, unit:'Box'},
@@ -466,8 +545,11 @@ const SEED_PRODUCTS = [
   {name:'Rislock-1', desc:'5 X 10', rate:112.44, unit:'Box'},
   {name:'Rislock-2', desc:'5 X 10', rate:224.87, unit:'Box'},
   {name:'Rislock-4', desc:'5 X 10', rate:337.31, unit:'Box'},
+  {name:'Rozavas- 5', desc:'5 X 10', rate:449.74, unit:'Box'},
   {name:'Rozavas-10', desc:'5 X 10', rate:899.49, unit:'Box'},
   {name:'Sariton 200 Mg', desc:'3 X 10', rate:179.90, unit:'Box'},
+  {name:'Sertlin-25', desc:'5 X 10', rate:112.44, unit:'Box'},
+  {name:'Sertlin-50', desc:'5 X 10', rate:224.87, unit:'Box'},
   {name:'Trazapin 15', desc:'3 X10', rate:224.87, unit:'Box'},
   {name:'Trazapin- 7.5', desc:'5 x 10', rate:269.85, unit:'Box'},
   {name:'Voricol 200', desc:'2 X 4', rate:719.59, unit:'Box'}
@@ -504,6 +586,43 @@ const SEED_HISTORY = [
     {name:'Rislock-4',desc:'5 X 10',rate:337.31,qty:1,unit:'Box',disc:0,bonus:0},
     {name:'Trazapin- 7.5',desc:'5 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0}
    ]},
+  {no:'ASZ013278', date:'2026-09-17', party:'03B Maa Pharmacy.( Chanpur Bazar Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:1415.04, total:1415.04,
+   items:[
+    {name:'Epram- 10',desc:'3 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Glirol 80mg',desc:'5 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Olme- 20',desc:'3 x 10',rate:215.88,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0}
+  ]},
+  {no:'ASZ013411', date:'2026-09-24', party:'03b Soydul Hoque Pharmacy.(Banigram, Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:1573.43, total:1573.43,
+   items:[
+    {name:'Lowet 120',desc:'3 X 6',rate:890.49,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Plator',desc:'5 X 10',rate:449.74,qty:1,unit:'Box',disc:0,bonus:0}
+  ]},
+  {no:'ASD52664', date:'2025-12-04', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:2217.59, total:2217.59,
+   items:[
+    {name:'Epram- 10',desc:'3 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Esofour Mups-20',desc:'6 X 10',rate:404.77,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Glirol 80mg',desc:'5 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Plator',desc:'5 X 10',rate:449.74,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin- 7.5',desc:'5 x 10',rate:269.85,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Trazapin 15',desc:'3 X10',rate:224.87,qty:1,unit:'Box',disc:0,bonus:0}
+  ]},
+  {no:'ASD52855', date:'2025-12-11', party:'03b Sheba Pharmacy.( Gunagori Banshakhali.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:8788.51, total:8788.51,
+   items:[
+    {name:'Epival Chrono-300',desc:'5 X 10',rate:337.31,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Epram- 5',desc:'5 X 10',rate:247.36,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Livacor 300',desc:'3 x 10',rate:620.65,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Olme AM',desc:'3 X 10',rate:296.83,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Olme-H20 (RX)',desc:'3 X 10',rate:191.14,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Picloza 25',desc:'5 X 10',rate:112.44,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Plator Plus',desc:'5 x 10',rate:539.69,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Pregabid 50',desc:'6 x 10',rate:755.57,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Rislock-2',desc:'5 X 10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Rozavas- 5',desc:'5 X 10',rate:449.74,qty:5,unit:'Box',disc:0,bonus:0},
+    {name:'Rozavas-10',desc:'5 X 10',rate:899.49,qty:1,unit:'Box',disc:0,bonus:0},
+    {name:'Sertlin-25',desc:'5 X 10',rate:112.44,qty:2,unit:'Box',disc:0,bonus:0},
+    {name:'Sertlin-50',desc:'5 X 10',rate:224.87,qty:2,unit:'Box',disc:0,bonus:0}
+  ]},
   {no:'ASD59323', date:'2026-08-06', party:'03b Suruchi Pharmacy.(Gunagori Kasmohal Bansha.)', mpo:'Banshakhali Sazzad', mob:'01859213705', area:'BANSHAKHALI', adj:0, narr:'', paid:29733.46, total:29733.46,
    items:[
     {name:'Cefuxim CV250',desc:'7 x 2',rate:402.97,qty:10,unit:'Box',disc:0,bonus:1},
@@ -668,7 +787,7 @@ function showTab(n,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
   $('tab-'+n).classList.add('active'); btn.classList.add('active');
-  if(n==='prod') renderProducts(); if(n==='hist') renderHistory(); if(n==='st') renderStatement(); if(n==='kh') renderKhata(); if(n==='route') renderRoute(); if(n==='rp') renderReport(); if(n==='shop') renderShop(); if(n==='set') loadSettings();
+  if(n==='prod') renderProducts(); if(n==='hist') renderHistory(); if(n==='st') renderStatement(); if(n==='kh') renderKhata(); if(n==='mrp') mrpInit(); if(n==='route') renderRoute(); if(n==='rp') renderReport(); if(n==='shop') renderShop(); if(n==='set') loadSettings();
 }
 
 /* ---------------- items ---------------- */
@@ -860,7 +979,7 @@ function exportData(){
 }
 function importData(inp){
   const f=inp.files[0]; if(!f) return; const r=new FileReader();
-  r.onload=e=>{try{const d=JSON.parse(e.target.result);settings=d.settings||settings;products=d.products||products;history=d.history||history;parties=d.parties||parties;profiles=d.profiles||profiles;routes=d.routes||routes;if(d.khata){khata=d.khata;SS('khata',khata);}SS('profiles',profiles);SS('routes',routes);
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);settings=d.settings||settings;products=d.products||products;history=d.history||history;parties=d.parties||parties;profiles=d.profiles||profiles;routes=d.routes||routes;if(d.khata){khata=d.khata;SS('khata',khata);}if(d.mrpM){SS('mrpM',d.mrpM);SS('mrpP',d.mrpP||null);SS('mrpS',d.mrpS||mrpS);}SS('profiles',profiles);SS('routes',routes);
     SS('settings',settings);SS('products',products);SS('history',history);SS('parties',parties);alert('রিস্টোর হয়েছে ✔');location.reload();}catch{alert('ফাইল ঠিক নেই');}};
   r.readAsText(f);
 }
@@ -953,6 +1072,81 @@ function khMigrate(){ const qs=history.filter(h=>h.quick); if(!qs.length) return
   if(!confirm(qs.length+'টা টাকার এন্ট্রি (জমাসহ) খাতায় সরানো হবে এবং হিসাব ট্যাব থেকে মুছে যাবে। ঠিক আছে?')) return;
   qs.forEach(h=>{ khata.push({id:Date.now()+Math.random(),date:h.date,party:h.party,type:'d',amount:+h.total,note:(h.narr||'')+(h.no?' ('+h.no+')':'')}); (h.payments||[]).forEach(p=>khata.push({id:Date.now()+Math.random(),date:p.date,party:h.party,type:'c',amount:+p.amount,note:'জমা '+(p.method||'')+(p.note?' - '+p.note:'')})); });
   history=history.filter(h=>!h.quick); SS('history',history); SS('khata',khata); renderKhata(); alert('সরানো হয়েছে ✔'); }
+
+/* ================= MRP section (separate data: LS mrpP, mrpM, mrpS) ================= */
+let mrpP = LS('mrpP') || null;          // [{name,pack,spb,mrp}]
+let mrpM = LS('mrpM') || [];            // memos [{no,date,party,phone,items,sub,discPct,disc,total,paid,payments,note}]
+let mrpS = LS('mrpS') || {title:'',name:'',mob:'',addr:'',next:1};
+const SEED_MRP={'Lowet 120':{pack:'3 X 6',mrp:1188},'Glirol 80mg':{pack:'5 x 10',mrp:360},'Trazapin 15':{mrp:300},'Epram- 10':{mrp:360},'Olme- 20':{pack:'3 x 10',mrp:288},'Rozavas-10':{mrp:1200},'Plator':{mrp:600},'Rozavas- 5':{pack:'5 X 10',mrp:600},'Pregabid CR 82.5':{mrp:600}};
+let mIdx=null;                            // editing memo index
+const mNo = n => 'M-'+String(n).padStart(4,'0');
+const mDue = m => Math.round((m.total-(m.paid||0))*100)/100;
+function mrpInit(){
+  if(!mrpP){ mrpP=products.map(p=>({name:p.name,pack:p.desc||'',mrp:''})); }
+  let ch=false; mrpP.forEach(p=>{ if(p.name==='Rozavas 5'){p.name='Rozavas- 5';ch=true;} }); Object.entries(SEED_MRP).forEach(([n,v])=>{ let p=mrpP.find(x=>x.name===n); if(!p){ p={name:n,pack:v.pack||'',mrp:''}; mrpP.push(p); ch=true; } if(p.mrp===''||p.mrp===undefined){ p.mrp=v.mrp; ch=true; } if(!p.pack&&v.pack){ p.pack=v.pack; ch=true; } });
+  if(ch){ mrpP.sort((a,b)=>a.name.localeCompare(b.name)); SS('mrpP',mrpP); }
+  if(!mrpS.name){ mrpS.name=settings.mpo; mrpS.mob=settings.mob; }
+  if(!$('m-date').value) mNew();
+  $('m-plist').innerHTML=[...new Set([...mrpM.map(m=>m.party),...allParties()])].sort().map(p=>`<option value="${p}">`).join('');
+  $('ms-title').value=mrpS.title; $('ms-name').value=mrpS.name; $('ms-mob').value=mrpS.mob; $('ms-addr').value=mrpS.addr; $('ms-next').value=mrpS.next;
+}
+function mrpSub(k,btn){ document.querySelectorAll('.mrpsub').forEach(d=>d.style.display='none'); $('mrp-'+k).style.display='block'; btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(k==='list') renderMemoList(); if(k==='prod') renderMrpProducts(); }
+function mrpSaveSettings(){ mrpS={title:$('ms-title').value.trim(),name:$('ms-name').value.trim(),mob:$('ms-mob').value.trim(),addr:$('ms-addr').value.trim(),next:+$('ms-next').value||1}; SS('mrpS',mrpS); if(mIdx===null) $('m-no').value=mNo(mrpS.next); alert('সেভ হয়েছে ✔'); }
+/* products */
+function renderMrpProducts(){ const q=($('mp-search').value||'').toLowerCase();
+  $('mpTable').tBodies[0].innerHTML=mrpP.map((p,i)=>({p,i})).filter(x=>x.p.name.toLowerCase().includes(q)).map(({p,i})=>`<tr><td><input value="${p.name}" onchange="mpEdit(${i},'name',this.value)"></td><td><input value="${p.pack}" onchange="mpEdit(${i},'pack',this.value)" style="width:80px"></td><td><input type="number" step="0.01" value="${p.mrp}" onchange="mpEdit(${i},'mrp',this.value)" style="width:100px;${p.mrp===''?'border-color:#f0a500;background:#fff8e1':''}"></td><td><button class="btn-r btn-sm" onclick="mpDel(${i})">✕</button></td></tr>`).join(''); }
+function mpEdit(i,k,v){ mrpP[i][k]=(k==='mrp')?(v===''?'':+v):v; if(k==='name') mrpP.sort((a,b)=>a.name.localeCompare(b.name)); SS('mrpP',mrpP); renderMrpProducts(); }
+function mpAdd(){ const n=prompt('প্রোডাক্টের নাম:'); if(!n) return; mrpP.push({name:n.trim(),pack:'',mrp:''}); mrpP.sort((a,b)=>a.name.localeCompare(b.name)); SS('mrpP',mrpP); $('mp-search').value=n; renderMrpProducts(); }
+function mpDel(i){ if(confirm(mrpP[i].name+' মুছবেন?')){ mrpP.splice(i,1); SS('mrpP',mrpP); renderMrpProducts(); } }
+/* memo rows */
+function mAddRow(d={}){ const tb=$('mTable').tBodies[0]; const tr=document.createElement('tr'); const opts=mrpP.map(p=>`<option value="${p.name.replace(/"/g,'&quot;')}">`).join('');
+  tr.innerHTML=`<td class="sl"></td><td><input class="mi-name" list="mp-dl" value="${d.name||''}" onchange="mPick(this)"><datalist id="mp-dl">${opts}</datalist></td><td><input class="mi-pack" value="${d.pack||''}" style="width:70px"></td><td><input class="mi-mrp" type="number" step="0.01" value="${d.mrp||''}" style="width:90px" oninput="mCalc()"></td><td><input class="mi-qty" type="number" step="0.01" value="${d.qty||1}" style="width:60px" oninput="mCalc()"></td><td class="r mi-amt"></td><td><button class="btn-r btn-sm" onclick="this.closest('tr').remove();mCalc()">✕</button></td>`;
+  tb.appendChild(tr); mCalc(); if(!d.name) tr.querySelector('.mi-name').focus(); }
+function mPick(inp){ const p=mrpP.find(x=>x.name===inp.value); if(!p) return; const tr=inp.closest('tr'); tr.querySelector('.mi-pack').value=p.pack; tr.querySelector('.mi-mrp').value=p.mrp; if(p.mrp==='') alert(p.name+' — MRP লেখা নেই। "MRP প্রোডাক্ট" ট্যাবে বসিয়ে নিন, অথবা এখানে হাতে লিখুন।'); mCalc(); }
+function mItems(){ return [...$('mTable').tBodies[0].rows].map(tr=>{ const g=c=>tr.querySelector(c); const mrp=+g('.mi-mrp').value||0, qty=+g('.mi-qty').value||0; return {name:g('.mi-name').value.trim(),pack:g('.mi-pack').value.trim(),mrp,qty,amt:Math.round(mrp*qty*100)/100}; }).filter(it=>it.name); }
+function mCalc(){ let sub=0; [...$('mTable').tBodies[0].rows].forEach((tr,k)=>{ tr.querySelector('.sl').textContent=k+1; const mrp=+tr.querySelector('.mi-mrp').value||0, qty=+tr.querySelector('.mi-qty').value||0; const amt=Math.round(mrp*qty*100)/100; tr.querySelector('.mi-amt').textContent=fmt(amt); sub+=amt; });
+  const pct=+$('m-disc').value||0; const disc=Math.round(sub*pct)/100; const tot=Math.round((sub-disc)*100)/100; $('m-sub').textContent=fmt(sub); $('m-dsc').textContent=fmt(disc); $('m-tot').textContent=fmt(tot); mBuildMemo({no:$('m-no').value,date:$('m-date').value,party:$('m-party').value,phone:$('m-phone').value,items:mItems(),sub,discPct:pct,disc,total:tot,paid:+$('m-paid').value||0,note:$('m-note').value}); return {sub,disc,tot,pct}; }
+function mNew(){ mIdx=null; $('m-no').value=mNo(mrpS.next); $('m-date').value=new Date().toISOString().slice(0,10); $('m-party').value=''; $('m-phone').value=''; $('m-disc').value=0; $('m-paid').value=0; $('m-note').value=''; $('mTable').tBodies[0].innerHTML=''; mAddRow(); }
+function mBuildMemo(m){ const rows=m.items.map((it,k)=>`<tr><td>${k+1}</td><td>${it.name}</td><td>${it.pack}</td><td class="r">${fmt(it.mrp)}</td><td class="r">${it.qty}</td><td class="r">${fmt(it.amt)}</td></tr>`).join('');
+  const due=Math.round((m.total-m.paid)*100)/100;
+  $('memo').innerHTML=`<h3>${mrpS.title||mrpS.name||''}</h3>${mrpS.title?`<p class="sub">${mrpS.name}</p>`:''}<p class="sub">${mrpS.addr||''}${mrpS.addr&&mrpS.mob?' · ':''}${mrpS.mob?'Mobile: '+mrpS.mob:''}</p><div style="text-align:center"><span class="badge-m">CASH MEMO</span></div>
+   <table style="border:none"><tr><td style="border:none;width:50%"><b>Memo No:</b> ${m.no}<br><b>Date:</b> ${bd(m.date)}</td><td style="border:none"><b>Party:</b> ${m.party||''}<br><b>Mobile:</b> ${m.phone||''}</td></tr></table>
+   <table><thead><tr><th>SL</th><th>Item</th><th>Pack</th><th>MRP / Box</th><th>Qty (Box)</th><th>Amount</th></tr></thead><tbody>${rows||'<tr><td colspan="6" style="text-align:center;color:#999">—</td></tr>'}</tbody>
+   <tfoot><tr><th colspan="5" style="text-align:right">Sub Total</th><th class="r">${fmt(m.sub)}</th></tr>${m.disc?`<tr><th colspan="5" style="text-align:right">Discount (${m.discPct}%)</th><th class="r">- ${fmt(m.disc)}</th></tr>`:''}<tr><th colspan="5" style="text-align:right;font-size:13px">Total</th><th class="r" style="font-size:13px">${fmt(m.total)}</th></tr>${m.paid?`<tr><th colspan="5" style="text-align:right">Paid</th><th class="r">${fmt(m.paid)}</th></tr><tr><th colspan="5" style="text-align:right">Due</th><th class="r" style="color:#c62828">${fmt(due)}</th></tr>`:''}</tfoot></table>
+   <p style="margin:8px 0 0"><b>In words:</b> (BDT) ${toWords(m.total)}</p>${m.note?`<p style="margin:4px 0 0"><b>Note:</b> ${m.note}</p>`:''}
+   <div class="sign" style="margin-top:45px"><div>Received By</div><div>${mrpS.name||''}<br><span style="font-size:10px">Authorized Signature</span></div></div>`; }
+function mSave(){ const items=mItems(); const party=$('m-party').value.trim(); if(!party) return alert('পার্টির নাম দিন'); if(!items.length) return alert('অন্তত একটা আইটেম দিন'); if(items.some(it=>!it.mrp)) return alert('প্রতিটা আইটেমে MRP লাগবে');
+  const c=mCalc(); const paid=+$('m-paid').value||0; const phone=$('m-phone').value.trim();
+  const m={no:$('m-no').value,date:$('m-date').value,party,phone,items,sub:c.sub,discPct:c.pct,disc:c.disc,total:c.tot,note:$('m-note').value.trim(),payments:[],paid:0};
+  if(mIdx===null){ if(paid>0) m.payments.push({date:m.date,amount:paid,method:'Cash',note:'মেমোর সাথে'}); m.paid=paid; mrpM.push(m); mrpS.next++; SS('mrpS',mrpS); mIdx=mrpM.length-1; }
+  else { const old=mrpM[mIdx]; m.payments=old.payments; m.paid=old.paid; mrpM[mIdx]=m; }
+  SS('mrpM',mrpM); alert('মেমো '+m.no+' সেভ হয়েছে ✔'); mBuildMemo({...m,paid:m.paid}); }
+function mPrint(){ mCalc(); document.body.classList.add('print-mrp'); window.print(); }
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-mrp'));
+function mOpen(i){ const m=mrpM[i]; mIdx=i; $('m-no').value=m.no; $('m-date').value=m.date; $('m-party').value=m.party; $('m-phone').value=m.phone||''; $('m-disc').value=m.discPct||0; $('m-paid').value=m.paid||0; $('m-note').value=m.note||''; $('mTable').tBodies[0].innerHTML=''; m.items.forEach(it=>mAddRow(it)); mCalc(); document.querySelector('#tab-mrp .tabs button').click(); }
+/* memo list / payments */
+function renderMemoList(){ const sel=$('ml-party'); const cur=sel.value; sel.innerHTML='<option value="">— সব পার্টি —</option>'+[...new Set(mrpM.map(m=>m.party))].sort().map(p=>`<option ${p===cur?'selected':''}>${p}</option>`).join('');
+  const party=sel.value; const src=mrpM.map((m,i)=>({m,i})).filter(x=>!party||x.m.party===party); let T=0,P=0;
+  $('mlTable').tBodies[0].innerHTML=src.slice().reverse().map(({m,i})=>{ const d=mDue(m); T+=m.total; P+=m.paid||0; return `<tr><td>${bd(m.date)}</td><td>${m.no}</td><td>${m.party}${m.phone?'<div class="hint">'+m.phone+'</div>':''}</td><td class="r">${fmt(m.total)}</td><td class="r paid">${fmt(m.paid||0)}</td><td class="r ${d>0.5?'due':'paid'}">${fmt(d)}</td><td style="white-space:nowrap"><button class="btn-g btn-sm" onclick="mPay(${i})">জমা</button> <button class="btn-wa btn-sm" onclick="mMsg(${i})">📨</button> <button class="btn-p btn-sm" onclick="mOpen(${i})">খুলুন</button> <button class="btn-r btn-sm" onclick="mDel(${i})">✕</button></td></tr>`+((m.payments||[]).length?`<tr><td colspan="7" class="hint" style="padding-left:20px">${m.payments.map((p,k)=>bd(p.date)+' '+fmt(p.amount)+' ('+methodBn(p.method)+')'+(p.note?' '+p.note:'')+' <a href="#" onclick="mDelPay('+i+','+k+');return false" style="color:#c62828">✕</a>').join(' · ')}</td></tr>`:''); }).join('')||'<tr><td colspan="7" class="hint">কোনো মেমো নেই</td></tr>';
+  $('ml-cnt').textContent=src.length; $('ml-tot').textContent=fmt(T); $('ml-paid').textContent=fmt(P); $('ml-due').textContent=fmt(T-P); }
+function mPay(i){ const m=mrpM[i]; const a=prompt(m.party+' — '+m.no+'\nবকেয়া '+fmt(mDue(m))+' টাকা।\nকত টাকা জমা?',mDue(m).toFixed(2)); if(a===null) return; const amt=+a||0; if(amt<=0) return;
+  const dt=prompt('তারিখ (YYYY-MM-DD):',new Date().toISOString().slice(0,10)); if(!dt) return; const mt=prompt('মাধ্যম: Cash / bKash / Nagad / Rocket / Bank','Cash')||'Cash';
+  m.payments=m.payments||[]; m.payments.push({date:dt,amount:amt,method:mt,note:''}); m.paid=m.payments.reduce((s,p)=>s+ +p.amount,0); SS('mrpM',mrpM); renderMemoList();
+  setTimeout(()=>{ if(confirm('জমা সেভ হয়েছে। পার্টিকে রসিদ-মেসেজ পাঠাবেন?')) mMsg(i,{date:dt,amount:amt,method:mt}); },200); }
+function mDelPay(i,k){ if(!confirm('এই জমা মুছবেন?')) return; const m=mrpM[i]; m.payments.splice(k,1); m.paid=m.payments.reduce((s,p)=>s+ +p.amount,0); SS('mrpM',mrpM); renderMemoList(); }
+function mDel(i){ if(!confirm(mrpM[i].no+' মেমো মুছবেন?')) return; mrpM.splice(i,1); SS('mrpM',mrpM); renderMemoList(); }
+const mPartyDue = p => Math.round(mrpM.filter(m=>m.party===p).reduce((a,m)=>a+mDue(m),0)*100)/100;
+function mMsg(i,pay){ const m=mrpM[i]; const due=mDue(m), pd=mPartyDue(m.party);
+  let t=shortParty(m.party)+',\n'+(pay?bd(pay.date)+' তারিখে '+fmt(pay.amount)+' টাকা ('+methodBn(pay.method)+') জমা পেলাম, ধন্যবাদ।\n':'')+'মেমো '+m.no+' ('+bd(m.date)+'): মোট '+fmt(m.total)+', জমা '+fmt(m.paid||0)+', বকেয়া '+fmt(due)+' টাকা।'+(Math.abs(pd-due)>0.5?'\nআপনার মোট বকেয়া '+fmt(pd)+' টাকা।':'')+(due>0.5&&!pay?'\nদয়া করে পরিশোধ করবেন, ধন্যবাদ।':'')+'\n— '+(mrpS.name||settings.mpo)+', '+(mrpS.mob||settings.mob);
+  if(m.phone && !prof(m.party).phone){ prof(m.party).phone=m.phone; SS('profiles',profiles); } openMsg(m.party,t); }
+function mStatementPrint(){ const party=$('ml-party').value; if(!party) return alert('আগে একটা পার্টি বাছুন'); const ms=mrpM.filter(m=>m.party===party).sort((a,b)=>a.date.localeCompare(b.date)); let T=0,P=0;
+  const rows=ms.map((m,k)=>{ T+=m.total; P+=m.paid||0; return `<tr><td>${k+1}</td><td>${bd(m.date)}</td><td>${m.no}</td><td>${m.items.length} items</td><td class="r">${fmt(m.total)}</td><td class="r">${fmt(m.paid||0)}</td><td class="r">${fmt(mDue(m))}</td></tr>`; }).join('');
+  const pays=[]; ms.forEach(m=>(m.payments||[]).forEach(p=>pays.push({...p,no:m.no}))); pays.sort((a,b)=>a.date.localeCompare(b.date));
+  $('memo').innerHTML=`<h3>${mrpS.title||mrpS.name||''}</h3><p class="sub">${mrpS.addr||''}${mrpS.mob?' · Mobile: '+mrpS.mob:''}</p><div style="text-align:center"><span class="badge-m">PARTY STATEMENT</span></div><p><b>Party:</b> ${party}${ms[0].phone?' &nbsp; <b>Mobile:</b> '+ms[0].phone:''} &nbsp; <b>Date:</b> ${new Date().toLocaleDateString('en-GB').replace(/\//g,'-')}</p>
+   <table><thead><tr><th>#</th><th>Date</th><th>Memo</th><th>Items</th><th>Total</th><th>Paid</th><th>Due</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><th colspan="4" style="text-align:right">Total</th><th class="r">${fmt(T)}</th><th class="r">${fmt(P)}</th><th class="r" style="color:#c62828">${fmt(T-P)}</th></tr></tfoot></table>
+   ${pays.length?`<p style="margin:10px 0 0"><b>Payments</b></p><table><thead><tr><th>Date</th><th>Memo</th><th>Amount</th><th>Method</th></tr></thead><tbody>${pays.map(p=>`<tr><td>${bd(p.date)}</td><td>${p.no}</td><td class="r">${fmt(p.amount)}</td><td>${p.method}</td></tr>`).join('')}</tbody></table>`:''}
+   <p style="margin-top:12px;font-size:14px"><b>Total Due: ${fmt(T-P)} Tk</b></p><div class="sign" style="margin-top:45px"><div>Party Signature</div><div>${mrpS.name||''}</div></div>`;
+  $('mrp-new').style.display='block'; document.body.classList.add('print-mrp'); window.print(); setTimeout(()=>{ $('mrp-new').style.display='none'; mCalc(); },500); }
 /* ---------------- quick money entry ---------------- */
 function openQuick(){ $('q-party').value=''; $('q-date').value=new Date().toISOString().slice(0,10); $('q-no').value=''; $('q-amt').value=''; $('q-paid').value=0; $('q-note').value=''; $('qmodal').style.display='flex'; }
 function saveQuick(){
@@ -1077,7 +1271,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter' && $('lock').style.d
 document.addEventListener('visibilitychange',()=>{ if(document.hidden && prefs.pin) prefs._hid=Date.now(); else if(!document.hidden && prefs.pin && prefs._hid && Date.now()-prefs._hid>5*60*1000) lockNow(); });
 
 /* ---- backup: share + reminder ---- */
-function backupBlob(){ return new Blob([JSON.stringify({settings,products,history,parties,profiles,routes,khata,prefs:{dark:prefs.dark,big:prefs.big,lang:prefs.lang}})],{type:'application/json'}); }
+function backupBlob(){ return new Blob([JSON.stringify({settings,products,history,parties,profiles,routes,khata,mrpP,mrpM,mrpS,prefs:{dark:prefs.dark,big:prefs.big,lang:prefs.lang}})],{type:'application/json'}); }
 function backupName(){ return 'Sazzad-MPO-Backup-'+new Date().toISOString().slice(0,10)+'.json'; }
 async function shareBackup(){
   const name=backupName(); const f=new File([backupBlob()],name,{type:'application/json'});
@@ -1159,6 +1353,6 @@ function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); defe
 window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
 renderProducts(); newInvoice(); initPrefs();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a42458ade9cd5807',t:'MTc5MDYxNTI2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a424d632d9011645',t:'MTc5MDYyMDQwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
