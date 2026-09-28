@@ -95,8 +95,15 @@
   #statement th,#statement td{border:1px solid #999;padding:4px 5px}
   #statement th{background:#f1f1f1}
   #statement .r{text-align:right}
+  #khataPrint h3{margin:0;text-align:center;font-size:18px} #khataPrint .sub{text-align:center;margin:2px 0;font-size:12px}
+  #khataPrint table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px} #khataPrint th,#khataPrint td{border:1px solid #999;padding:4px 5px} #khataPrint th{background:#f1f1f1} #khataPrint .r{text-align:right}
+  #khTable td,#khTable th{padding:5px 6px}
   @media print{
     body{background:#fff}
+    body.print-kh .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
+    body.print-kh .panel>*:not(#tab-kh){display:none!important}
+    body.print-kh #tab-kh>*:not(#khataPrint){display:none!important}
+    body.print-kh #invoice{display:none!important}
     .panel,.no-print{display:none!important}
     body.print-st .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
     body.print-st .panel>*:not(#tab-st){display:none!important}
@@ -132,6 +139,7 @@
     <button onclick="showTab('prod',this)">💊 প্রোডাক্ট লিস্ট</button>
     <button onclick="showTab('hist',this)">📒 হিসাব / বকেয়া</button>
     <button onclick="showTab('st',this)">🧾 স্টেটমেন্ট</button>
+    <button onclick="showTab('kh',this)" style="border-color:#8e24aa">📔 বাকির খাতা</button>
     <button onclick="showTab('route',this)">🛵 আজকের রুট</button>
     <button onclick="showTab('rp',this)">📊 মাসিক রিপোর্ট</button>
     <button onclick="showTab('shop',this)">🏪 দোকান</button>
@@ -195,7 +203,7 @@
     <h3 style="margin:6px 0;font-size:14px">দোকান অনুযায়ী বকেয়া</h3>
     <table class="edit list" id="partyTable"><thead><tr><th>Party</th><th>Invoices</th><th>Total</th><th>Paid</th><th>Due</th></tr></thead><tbody></tbody></table>
     <h3 style="margin:12px 0 6px;font-size:14px">সব ইনভয়েস</h3>
-    <div class="row"><button class="btn-o" onclick="openQuick()">➕ শুধু টাকার এন্ট্রি (ইনভয়েস হাতে নেই)</button><span class="hint" style="align-self:center">দোকানে ইনভয়েস থাকলে বা পুরনো বকেয়া হলে — শুধু দোকান, তারিখ, টাকা দিন</span></div>
+    <p class="hint" style="background:#faf5fc;border:1px solid #8e24aa;border-radius:6px;padding:8px">📔 ইনভয়েস হাতে নেই? সেই হিসাব এখানে নয় — <a href="#" onclick="document.querySelector('.tabs button:nth-child(5)').click();return false" style="color:#8e24aa;font-weight:bold">বাকির খাতা</a> ট্যাবে লিখুন। এই ট্যাবে শুধু ইনভয়েসওয়ালা বিক্রি থাকবে।</p>
     <p class="hint">🔴 লাল সারি = ৩০ দিনের বেশি পুরনো বকেয়া &nbsp;·&nbsp; 🟠 "টাকা" ব্যাজ = আইটেম ছাড়া শুধু টাকার এন্ট্রি</p>
     <table class="edit list" id="histTable"><thead><tr><th>Date</th><th>Inv No</th><th>Party</th><th>Total</th><th>Paid</th><th>Due</th><th>Action</th></tr></thead><tbody></tbody></table>
     <h3 style="margin:14px 0 6px;font-size:14px">↩️ রিটার্ন / এক্সপায়ারি</h3>
@@ -224,6 +232,31 @@
       <button class="btn-wa" onclick="waStatement()">💬 WhatsApp-এ বকেয়া পাঠান</button>
     </div>
     <div id="statement"></div>
+  </div>
+
+  <!-- ---- Khata tab (invoice-less ledger, fully separate data) ---- -->
+  <div id="tab-kh" class="tab">
+    <h2 style="color:#8e24aa">📔 বাকির খাতা <span class="hint" style="font-weight:normal">— ইনভয়েস ছাড়া হিসাব। এই হিসাব অন্য কোনো ট্যাবের সাথে মেশে না।</span></h2>
+    <div class="cards"><div class="card"><b id="kh-deb">0</b><span>মোট বাকি</span></div><div class="card"><b id="kh-cre" style="color:#2e7d32">0</b><span>মোট জমা</span></div><div class="card"><b id="kh-bal" style="color:#c62828">0</b><span>বর্তমান বকেয়া</span></div></div>
+    <div style="border:2px solid #8e24aa;border-radius:8px;padding:10px;margin:10px 0;background:#faf5fc">
+      <b>নতুন এন্ট্রি</b>
+      <div class="row" style="margin-top:6px">
+        <label style="flex:2 1 200px">দোকান <input id="kh-party" list="kh-plist" placeholder="দোকানের নাম"><datalist id="kh-plist"></datalist></label>
+        <label>তারিখ <input type="date" id="kh-date"></label>
+        <label>ধরন <select id="kh-type"><option value="d">বাকি (মাল দিলাম)</option><option value="c">জমা (টাকা পেলাম)</option></select></label>
+        <label>টাকা <input type="number" id="kh-amt" step="0.01" placeholder="0.00"></label>
+        <label style="flex:2 1 200px">বিবরণ <input id="kh-note" placeholder="যেমন: ইনভয়েস দোকানে / বিকাশ / নগদ"></label>
+      </div>
+      <button class="btn-g" onclick="khAdd()">➕ খাতায় লিখুন</button>
+    </div>
+    <div class="row" style="align-items:center">
+      <label style="flex:2 1 220px">দোকান বাছুন <select id="kh-sel" onchange="renderKhata()"><option value="">— সব দোকান (সারাংশ) —</option></select></label>
+      <button class="btn-p" onclick="printKhata()">🖨️ প্রিন্ট / PDF</button>
+      <button class="btn-wa" onclick="khMsg()">📨 বকেয়া মেসেজ</button>
+    </div>
+    <div style="overflow-x:auto"><table id="khTable" class="inv" style="width:100%"><thead></thead><tbody></tbody></table></div>
+    <div id="khataPrint" style="display:none"></div>
+    <p class="hint" style="margin-top:14px">💡 আগে "শুধু টাকার এন্ট্রি" দিয়ে যেগুলো লিখেছিলেন সেগুলো এই খাতায় সরাতে চাইলে: <button class="btn-s btn-sm" onclick="khMigrate()">টাকার এন্ট্রিগুলো খাতায় সরান</button></p>
   </div>
 
   <!-- ---- Route tab ---- -->
@@ -271,7 +304,7 @@
   <!-- ---- Settings tab ---- -->
   <div id="tab-set" class="tab">
     <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
-    <p class="hint">অ্যাপ ভার্সন: <b>v8</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
+    <p class="hint">অ্যাপ ভার্সন: <b>v10</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
     <div class="row">
       <label>Company Name <input id="s-co"></label>
       <label>Address line 1 <input id="s-ad1"></label>
@@ -635,7 +668,7 @@ function showTab(n,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
   $('tab-'+n).classList.add('active'); btn.classList.add('active');
-  if(n==='prod') renderProducts(); if(n==='hist') renderHistory(); if(n==='st') renderStatement(); if(n==='route') renderRoute(); if(n==='rp') renderReport(); if(n==='shop') renderShop(); if(n==='set') loadSettings();
+  if(n==='prod') renderProducts(); if(n==='hist') renderHistory(); if(n==='st') renderStatement(); if(n==='kh') renderKhata(); if(n==='route') renderRoute(); if(n==='rp') renderReport(); if(n==='shop') renderShop(); if(n==='set') loadSettings();
 }
 
 /* ---------------- items ---------------- */
@@ -827,7 +860,7 @@ function exportData(){
 }
 function importData(inp){
   const f=inp.files[0]; if(!f) return; const r=new FileReader();
-  r.onload=e=>{try{const d=JSON.parse(e.target.result);settings=d.settings||settings;products=d.products||products;history=d.history||history;parties=d.parties||parties;profiles=d.profiles||profiles;routes=d.routes||routes;SS('profiles',profiles);SS('routes',routes);
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);settings=d.settings||settings;products=d.products||products;history=d.history||history;parties=d.parties||parties;profiles=d.profiles||profiles;routes=d.routes||routes;if(d.khata){khata=d.khata;SS('khata',khata);}SS('profiles',profiles);SS('routes',routes);
     SS('settings',settings);SS('products',products);SS('history',history);SS('parties',parties);alert('রিস্টোর হয়েছে ✔');location.reload();}catch{alert('ফাইল ঠিক নেই');}};
   r.readAsText(f);
 }
@@ -866,6 +899,60 @@ function waStatement(){
   t+='\n— '+settings.mpo+' (MPO), '+settings.mob; waSend(party,t);
 }
 
+
+/* ---------------- বাকির খাতা (separate ledger, LS key 'khata') ---------------- */
+let khata = LS('khata') || [];   // {id,date,party,type:'d'|'c',amount,note}
+const khBal = p => Math.round(khata.filter(e=>e.party===p).reduce((a,e)=>a+(e.type==='d'?+e.amount:-e.amount),0)*100)/100;
+const khParties = () => [...new Set(khata.map(e=>e.party))].sort();
+function khAdd(){
+  const party=$('kh-party').value.trim(), date=$('kh-date').value, type=$('kh-type').value, amt=+$('kh-amt').value||0, note=$('kh-note').value.trim();
+  if(!party) return alert('দোকানের নাম দিন'); if(!date) return alert('তারিখ দিন'); if(amt<=0) return alert('টাকার পরিমাণ দিন');
+  if(type==='c' && amt>khBal(party)+0.5 && !confirm(party+'-এর খাতায় বকেয়া '+fmt(khBal(party))+' টাকা, কিন্তু জমা লিখছেন '+fmt(amt)+'। ঠিক আছে?')) return;
+  khata.push({id:Date.now(),date,party,type,amount:amt,note}); SS('khata',khata);
+  $('kh-amt').value=''; $('kh-note').value=''; renderKhata(party);
+}
+function khDel(id){ if(!confirm('এই লাইনটা মুছবেন?')) return; khata=khata.filter(e=>e.id!==id); SS('khata',khata); renderKhata(); }
+function renderKhata(force){
+  if(!$('kh-date').value) $('kh-date').value=new Date().toISOString().slice(0,10);
+  const names=[...new Set([...khParties(),...allParties()])].sort();
+  $('kh-plist').innerHTML=names.map(p=>`<option value="${p}">`).join('');
+  const sel=$('kh-sel'); const cur=(typeof force==='string')?force:sel.value; sel.innerHTML='<option value="">— সব দোকান (সারাংশ) —</option>'+khParties().map(p=>`<option ${p===cur?'selected':''}>${p}</option>`).join('');
+  const party=sel.value; const th=$('khTable').tHead, tb=$('khTable').tBodies[0];
+  let D=0,C=0; const src=party?khata.filter(e=>e.party===party):khata; src.forEach(e=>{ if(e.type==='d') D+=+e.amount; else C+=+e.amount; });
+  $('kh-deb').textContent=fmt(D); $('kh-cre').textContent=fmt(C); $('kh-bal').textContent=fmt(D-C);
+  if(!party){
+    th.innerHTML='<tr><th>দোকান</th><th class="r">বাকি</th><th class="r">জমা</th><th class="r">বকেয়া</th><th>শেষ লেনদেন</th><th></th></tr>';
+    tb.innerHTML=khParties().map(p=>{ const es=khata.filter(e=>e.party===p); const d=es.filter(e=>e.type==='d').reduce((a,e)=>a+ +e.amount,0), c=es.filter(e=>e.type==='c').reduce((a,e)=>a+ +e.amount,0); const last=es.map(e=>e.date).sort().pop();
+      return `<tr><td>${p}</td><td class="r">${fmt(d)}</td><td class="r paid">${fmt(c)}</td><td class="r ${d-c>0.5?'due':'paid'}">${fmt(d-c)}</td><td>${bd(last)}</td><td><button class="btn-p btn-sm" onclick="$('kh-sel').value='${p.replace(/'/g,"\\'")}';renderKhata()">দেখুন</button></td></tr>`; }).join('')||'<tr><td colspan="6" class="hint">খাতা খালি — উপরে এন্ট্রি দিন</td></tr>';
+  } else {
+    th.innerHTML='<tr><th>তারিখ</th><th>বিবরণ</th><th class="r">বাকি</th><th class="r">জমা</th><th class="r">ব্যালেন্স</th><th></th></tr>';
+    let bal=0; tb.innerHTML=khata.filter(e=>e.party===party).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id).map(e=>{ bal+=e.type==='d'?+e.amount:-e.amount;
+      return `<tr><td>${bd(e.date)}</td><td>${e.note||(e.type==='d'?'বাকি':'জমা')}</td><td class="r">${e.type==='d'?fmt(e.amount):''}</td><td class="r paid">${e.type==='c'?fmt(e.amount):''}</td><td class="r ${bal>0.5?'due':'paid'}">${fmt(bal)}</td><td><button class="btn-r btn-sm" onclick="khDel(${e.id})">✕</button></td></tr>`; }).join('');
+  }
+  buildKhataPrint(party);
+}
+function buildKhataPrint(party){
+  const head=`<h3>${settings.co}</h3><p class="sub">${settings.ad1} ${settings.ad2}</p><p class="sub"><b>${party?'Party Ledger (বাকির খাতা)':'Khata Summary (বাকির খাতা — সারাংশ)'}</b></p>
+   <p style="margin:8px 0 0">${party?'<b>Party:</b> '+party+(prof(party).phone?' &nbsp; <b>Phone:</b> '+prof(party).phone:'')+'<br>':''}<b>MPO:</b> ${settings.mpo} (${settings.mob}) &nbsp; <b>Date:</b> ${new Date().toLocaleDateString('en-GB').replace(/\//g,'-')}</p>`;
+  let body='';
+  if(party){ let bal=0,D=0,C=0; const rows=khata.filter(e=>e.party===party).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id).map((e,k)=>{ bal+=e.type==='d'?+e.amount:-e.amount; if(e.type==='d')D+=+e.amount; else C+=+e.amount;
+      return `<tr><td>${k+1}</td><td>${bd(e.date)}</td><td>${e.note||(e.type==='d'?'Goods (বাকি)':'Payment (জমা)')}</td><td class="r">${e.type==='d'?fmt(e.amount):''}</td><td class="r">${e.type==='c'?fmt(e.amount):''}</td><td class="r">${fmt(bal)}</td></tr>`; }).join('');
+    body=`<table><thead><tr><th>#</th><th>Date</th><th>Particulars</th><th>Debit (বাকি)</th><th>Credit (জমা)</th><th>Balance</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><th colspan="3" style="text-align:right">Total</th><th class="r">${fmt(D)}</th><th class="r">${fmt(C)}</th><th class="r" style="color:#c62828">${fmt(D-C)}</th></tr></tfoot></table>
+      <p style="margin-top:14px;font-size:14px"><b>Total Due (বকেয়া): ${fmt(D-C)} Tk</b></p><div class="sign" style="margin-top:40px"><div>Party Signature</div><div>MPO Signature</div></div>`;
+  } else { let D=0,C=0; const rows=khParties().map((p,k)=>{ const es=khata.filter(e=>e.party===p); const d=es.filter(e=>e.type==='d').reduce((a,e)=>a+ +e.amount,0), c=es.filter(e=>e.type==='c').reduce((a,e)=>a+ +e.amount,0); D+=d;C+=c; return `<tr><td>${k+1}</td><td>${p}</td><td class="r">${fmt(d)}</td><td class="r">${fmt(c)}</td><td class="r">${fmt(d-c)}</td></tr>`; }).join('');
+    body=`<table><thead><tr><th>#</th><th>Party</th><th>Debit (বাকি)</th><th>Credit (জমা)</th><th>Due</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><th colspan="2" style="text-align:right">Total</th><th class="r">${fmt(D)}</th><th class="r">${fmt(C)}</th><th class="r" style="color:#c62828">${fmt(D-C)}</th></tr></tfoot></table>`; }
+  $('khataPrint').innerHTML=head+body;
+}
+function printKhata(){ buildKhataPrint($('kh-sel').value); $('khataPrint').style.display='block'; document.body.classList.add('print-kh'); window.print(); }
+window.addEventListener('afterprint',()=>{ document.body.classList.remove('print-kh'); $('khataPrint').style.display='none'; });
+function khMsg(){ const party=$('kh-sel').value; if(!party) return alert('আগে একটা দোকান বাছুন');
+  const es=khata.filter(e=>e.party===party).sort((a,b)=>a.date.localeCompare(b.date)); const lastPay=es.filter(e=>e.type==='c').pop(); const bal=khBal(party);
+  let t=shortParty(party)+',\n'+(lastPay?bd(lastPay.date)+' তারিখে '+fmt(lastPay.amount)+' টাকা জমা পেয়েছি, ধন্যবাদ।\n':'')+'আপনার বর্তমান বকেয়া '+fmt(bal)+' টাকা।'+(bal>0.5?'\nদয়া করে পরিশোধ করবেন।':'')+'\n— '+settings.mpo+', Albion, '+settings.mob;
+  openMsg(party,t); }
+function khMigrate(){ const qs=history.filter(h=>h.quick); if(!qs.length) return alert('হিসাব ট্যাবে কোনো "টাকার এন্ট্রি" নেই');
+  if(!confirm(qs.length+'টা টাকার এন্ট্রি (জমাসহ) খাতায় সরানো হবে এবং হিসাব ট্যাব থেকে মুছে যাবে। ঠিক আছে?')) return;
+  qs.forEach(h=>{ khata.push({id:Date.now()+Math.random(),date:h.date,party:h.party,type:'d',amount:+h.total,note:(h.narr||'')+(h.no?' ('+h.no+')':'')}); (h.payments||[]).forEach(p=>khata.push({id:Date.now()+Math.random(),date:p.date,party:h.party,type:'c',amount:+p.amount,note:'জমা '+(p.method||'')+(p.note?' - '+p.note:'')})); });
+  history=history.filter(h=>!h.quick); SS('history',history); SS('khata',khata); renderKhata(); alert('সরানো হয়েছে ✔'); }
 /* ---------------- quick money entry ---------------- */
 function openQuick(){ $('q-party').value=''; $('q-date').value=new Date().toISOString().slice(0,10); $('q-no').value=''; $('q-amt').value=''; $('q-paid').value=0; $('q-note').value=''; $('qmodal').style.display='flex'; }
 function saveQuick(){
@@ -990,7 +1077,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter' && $('lock').style.d
 document.addEventListener('visibilitychange',()=>{ if(document.hidden && prefs.pin) prefs._hid=Date.now(); else if(!document.hidden && prefs.pin && prefs._hid && Date.now()-prefs._hid>5*60*1000) lockNow(); });
 
 /* ---- backup: share + reminder ---- */
-function backupBlob(){ return new Blob([JSON.stringify({settings,products,history,parties,profiles,routes,prefs:{dark:prefs.dark,big:prefs.big,lang:prefs.lang}})],{type:'application/json'}); }
+function backupBlob(){ return new Blob([JSON.stringify({settings,products,history,parties,profiles,routes,khata,prefs:{dark:prefs.dark,big:prefs.big,lang:prefs.lang}})],{type:'application/json'}); }
 function backupName(){ return 'Sazzad-MPO-Backup-'+new Date().toISOString().slice(0,10)+'.json'; }
 async function shareBackup(){
   const name=backupName(); const f=new File([backupBlob()],name,{type:'application/json'});
@@ -1072,6 +1159,6 @@ function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); defe
 window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
 renderProducts(); newInvoice(); initPrefs();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a41c16e629cbdce8',t:'MTc5MDUyODY4Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4244c053bf3812c',t:'MTc5MDYxNDc0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
