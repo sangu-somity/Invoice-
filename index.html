@@ -107,16 +107,22 @@
   @media (max-width:800px){#memo{padding:10px;overflow-x:auto}}
   @media print{
     body{background:#fff}
+    .panel,.no-print{display:none!important}
     body.print-mrp .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
     body.print-mrp .panel>*:not(#tab-mrp){display:none!important}
-    body.print-mrp #tab-mrp>*:not(#memo){display:none!important}
+    body.print-mrp #tab-mrp{display:block!important}
+    body.print-mrp #tab-mrp>*:not(#mrp-new){display:none!important}
+    body.print-mrp #mrp-new{display:block!important}
+    body.print-mrp #mrp-new>*:not(#memo){display:none!important}
+    body.print-mrp #memo{display:block!important}
     body.print-mrp #memo{border:none;max-width:none;margin:0;padding:0}
     body.print-mrp #invoice{display:none!important}
     body.print-kh .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
     body.print-kh .panel>*:not(#tab-kh){display:none!important}
+    body.print-kh #tab-kh{display:block!important}
     body.print-kh #tab-kh>*:not(#khataPrint){display:none!important}
+    body.print-kh #khataPrint{display:block!important}
     body.print-kh #invoice{display:none!important}
-    .panel,.no-print{display:none!important}
     body.print-st .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
     body.print-st .panel>*:not(#tab-st){display:none!important}
     body.print-st #tab-st>*:not(#statement){display:none!important}
@@ -373,7 +379,7 @@
   <!-- ---- Settings tab ---- -->
   <div id="tab-set" class="tab">
     <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
-    <p class="hint">অ্যাপ ভার্সন: <b>v16</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
+    <p class="hint">অ্যাপ ভার্সন: <b>v17</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
     <div class="row">
       <label>Company Name <input id="s-co"></label>
       <label>Address line 1 <input id="s-ad1"></label>
@@ -1353,6 +1359,6 @@ function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); defe
 window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
 renderProducts(); newInvoice(); initPrefs();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a424d632d9011645',t:'MTc5MDYyMDQwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
