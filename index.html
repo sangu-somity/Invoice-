@@ -69,12 +69,12 @@
   .meta tr td:nth-child(2){width:50%}
   .meta .party{font-size:12px;font-weight:bold;padding-left:6px}
   table.inv{width:100%;border-collapse:collapse;margin-top:34px;font-size:10px;border:1px solid #444}
-  table.inv th{background:#e4e4e4;border:1px solid #333;border-bottom:2px solid #333;padding:6px 3px;font-size:9px;font-weight:bold;line-height:1.25}
+  table.inv th{background:#e4e4e4;border:1px solid #333;border-bottom:2px solid #333;padding:6px 3px;font-size:9px;font-weight:bold;line-height:1.25;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   table.inv th:first-child{text-align:left;padding-left:5px;white-space:nowrap}
   table.inv td{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;padding:7px 3px 5px;white-space:nowrap}
   table.inv tbody td.amt{font-size:12px;padding-right:6px}
   table.inv tbody td.q{text-align:left;padding-left:4px}
-  table.inv .qbox{display:inline-block;min-width:34px;background:#c8c8c8;text-align:right;padding:1px 2px 1px 0;margin-right:3px}
+  table.inv .qbox{display:inline-block;min-width:34px;background:#c8c8c8;text-align:right;padding:1px 2px 1px 0;margin-right:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:inset 0 0 0 30px #c8c8c8}
   table.inv .r{text-align:right}.c{text-align:center}
   table.inv tfoot td{border:1px solid #bbb;font-weight:bold;padding:5px 3px;font-size:10px}
   table.inv tfoot .lab{text-align:right;padding-right:8px}
@@ -119,6 +119,7 @@
   body.dark #memo{background:#fff;color:#000}
   @media (max-width:800px){#memo{padding:10px;overflow-x:auto}}
   @media print{
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     body{background:#fff}
     .panel,.no-print{display:none!important}
     body.print-mrp .panel{display:block!important;box-shadow:none;margin:0;padding:0;max-width:none}
@@ -393,7 +394,7 @@
   <!-- ---- Settings tab ---- -->
   <div id="tab-set" class="tab">
     <h2>কোম্পানি ও ডিফল্ট তথ্য</h2>
-    <p class="hint">অ্যাপ ভার্সন: <b>v19</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
+    <p class="hint">অ্যাপ ভার্সন: <b>v20</b> · ব্রাউজার শেয়ার: <span id="shareCap"></span></p>
     <div class="row">
       <label>Company Name <input id="s-co"></label>
       <label>Address line 1 <input id="s-ad1"></label>
@@ -1373,6 +1374,6 @@ function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); defe
 window.addEventListener('appinstalled',()=>{ $('installBtn').style.display='none'; });
 renderProducts(); newInvoice(); initPrefs();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a43a6a6f6b401645',t:'MTc5MDg0NjY4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
-</body>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a473c3cf1fec3a25',t:'MTc5MTQ0ODAzMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
